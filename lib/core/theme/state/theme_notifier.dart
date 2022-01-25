@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_crossword/core/theme/models/custom_theme.dart';
 
 const List<CustomTheme> _availableThemes = [
   CustomTheme(
       id: 'default_dark',
-      backgroundColor: Color(0xff121213),
-      accentColor: Color(0xffb59f37),
+      backgroundColor: Color(0xff181818),
+      accentColor: Color(0xff1ed760),
       brightness: Brightness.dark,
-      tileColor: Color(0xff3a3a3c)),
+      tileColor: Color(0xff000000)),
   CustomTheme(
       id: 'amoled_black',
       backgroundColor: Colors.black,
@@ -39,9 +40,16 @@ class ThemeNotifier extends ChangeNotifier {
               .copyWith(secondary: _selectedTheme.accentColor)
           : const ColorScheme.dark()
               .copyWith(secondary: _selectedTheme.accentColor),
-      focusColor: _selectedTheme.accentColor,
+      focusColor: _selectedTheme.accentColor.withOpacity(0.1),
       hoverColor: _selectedTheme.accentColor.withOpacity(0.2),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: _selectedTheme.accentColor.withOpacity(0.11),
+          foregroundColor: _selectedTheme.accentColor,
+          highlightElevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          elevation: 0),
       tabBarTheme: TabBarTheme(
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(
@@ -71,12 +79,36 @@ class ThemeNotifier extends ChangeNotifier {
                 : Colors.white),
       ));
 
+  late SharedPreferences _preferences;
+
   ThemeNotifier() {
     _selectedTheme = _availableThemes.first;
+    _init();
+  }
+
+  void _init() async {
+    await _initPrefs();
+    _fetchPersistedTheme();
+  }
+
+  Future<void> _initPrefs() async {
+    _preferences = await SharedPreferences.getInstance();
+  }
+
+  _fetchPersistedTheme() {
+    final _persistedThemeId =
+        _preferences.getString('themeId') ?? _availableThemes.first.id;
+    _selectedTheme =
+        _availableThemes.firstWhere((theme) => theme.id == _persistedThemeId);
   }
 
   void setTheme(CustomTheme theme) {
     _selectedTheme = theme;
     notifyListeners();
+    _persistThemeSelection();
+  }
+
+  Future<void> _persistThemeSelection() async {
+    _preferences.setString('themeId', _selectedTheme.id);
   }
 }

@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/puzzle/state/puzzle_state.dart';
-import 'package:sliding_crossword/puzzle/ui/puzzle_widget.dart';
+import 'package:sliding_crossword/puzzle/ui/widgets/across_and_down_indexes.dart';
+import 'package:sliding_crossword/puzzle/ui/widgets/puzzle_widget.dart';
+import 'package:sliding_crossword/puzzle/ui/widgets/timer_and_moves.dart';
 
-const _startWidth = 30.0;
+import 'widgets/prompt_selector.dart';
 
 class PuzzlePage extends StatelessWidget {
   final Puzzle puzzle;
@@ -49,186 +51,32 @@ class PuzzlePagePresenter extends StatelessWidget {
           child: ResponsiveLayoutBuilder(
         small: (context, child) => Column(
           children: const [
-            Expanded(child: _TimerAndMoves()),
+            Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
-            _PromptSelector(),
+            PromptSelector(),
           ],
         ),
         medium: (context, child) => Column(
           children: const [
-            Expanded(child: _TimerAndMoves()),
+            Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
-            _PromptSelector(),
+            PromptSelector(),
           ],
         ),
         large: (context, child) => Row(
           children: [
-            const Expanded(child: _TimerAndMoves()),
+            const Expanded(child: TimerAndMoves()),
             Expanded(
                 flex: 2,
                 child: Column(
                   children: const [
                     Expanded(child: _MainPuzzle()),
-                    _PromptSelector(),
+                    PromptSelector(),
                   ],
                 )),
           ],
         ),
       )),
-    );
-  }
-}
-
-class _TimerAndMoves extends StatelessWidget {
-  const _TimerAndMoves({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _puzzleState = Provider.of<PuzzleState>(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.timer, size: 30),
-            SizedBox(width: 8),
-            Text('00:00', style: TextStyle(fontSize: 30))
-          ],
-        ),
-        const SizedBox(height: 10),
-        Text("Moves: ${_puzzleState.moves}",
-            style: const TextStyle(fontSize: 18))
-      ],
-    );
-  }
-}
-
-class _PromptSelector extends StatelessWidget {
-  const _PromptSelector({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _puzzleState = Provider.of<PuzzleState>(context);
-
-    if (_puzzleState.puzzle is! CrosswordPuzzle) {
-      return const SizedBox();
-    }
-
-    final _prompts = [
-      ...(_puzzleState.puzzle as CrosswordPuzzle).down,
-      ...(_puzzleState.puzzle as CrosswordPuzzle).across
-    ];
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: () {
-            _puzzleState.showHints = !_puzzleState.showHints;
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(_puzzleState.showHints
-                    ? Icons.visibility_off
-                    : Icons.visibility),
-                const SizedBox(width: 8),
-                Text(_puzzleState.showHints ? "Hide Hints" : "Show Hints")
-              ],
-            ),
-          ),
-        ),
-        _PromptSelectorPresenter(
-          key: const Key('prompt-selector'),
-          prompts: _prompts,
-          controller: _puzzleState.promptController,
-          onPromptChanged: _puzzleState.jumpToPrompt,
-          onPageChanged: (page) {
-            _puzzleState.highlightedPrompt = page;
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _PromptSelectorPresenter extends StatelessWidget {
-  final List<Question> prompts;
-  final PageController controller;
-  final Function(int) onPromptChanged;
-  final Function(int) onPageChanged;
-
-  const _PromptSelectorPresenter({
-    Key? key,
-    required this.prompts,
-    required this.controller,
-    required this.onPromptChanged,
-    required this.onPageChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      constraints: const BoxConstraints(maxWidth: 500),
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 0,
-        child: Row(
-          children: [
-            IconButton(
-                iconSize: 16,
-                onPressed: () {
-                  if (controller.page == 0) {
-                    onPromptChanged(prompts.length - 1);
-                  } else {
-                    if (controller.page == null) return;
-                    onPromptChanged((controller.page! - 1).toInt());
-                  }
-                },
-                icon: const Icon(Icons.arrow_back_ios)),
-            Expanded(
-              child: PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: controller,
-                  itemCount: prompts.length,
-                  onPageChanged: onPageChanged,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          prompts[index].prompt,
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          index < prompts.length / 2
-                              ? "${index + 1} Down"
-                              : "${index + 1 - prompts.length ~/ 2} Across",
-                          style: Theme.of(context).textTheme.subtitle2,
-                        ),
-                      ],
-                    );
-                  }),
-            ),
-            IconButton(
-                iconSize: 16,
-                onPressed: () {
-                  if (controller.page == prompts.length - 1) {
-                    onPromptChanged(0);
-                  } else {
-                    if (controller.page == null) return;
-                    onPromptChanged((controller.page! + 1).toInt());
-                  }
-                },
-                icon: const Icon(Icons.arrow_forward_ios)),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -258,12 +106,12 @@ class _MainPuzzle extends StatelessWidget {
                     child: _isCrossword
                         ? Column(
                             children: [
-                              const _DownIndexes(),
+                              const DownIndexes(),
                               const SizedBox(height: 8),
                               Expanded(
                                 child: Row(
                                   children: [
-                                    const _AcrossIndexes(),
+                                    const AcrossIndexes(),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: _puzzleState.tiles.isEmpty
@@ -328,107 +176,4 @@ class _MainPuzzle extends StatelessWidget {
           tileSize: conxtraints.maxWidth / gridSize,
         );
       });
-}
-
-class _DownIndexes extends StatelessWidget {
-  const _DownIndexes({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _puzzleState = Provider.of<PuzzleState>(context);
-
-    return SizedBox(
-      height: _startWidth,
-      child: Row(
-        children: [
-          const SizedBox(width: _startWidth, height: _startWidth),
-          for (int i = 0; i < _puzzleState.gridSize; i++)
-            Expanded(
-              child: _SingleIndex(
-                key: Key(i.toString()),
-                index: i,
-                highlight: i == _puzzleState.highlightedPrompt,
-                isSolved: _puzzleState.correctColumns.contains(i),
-                onTap: () {
-                  _puzzleState.jumpToPrompt(i);
-                },
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AcrossIndexes extends StatelessWidget {
-  const _AcrossIndexes({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _puzzleState = Provider.of<PuzzleState>(context);
-    return SizedBox(
-      width: _startWidth,
-      child: Column(
-        children: [
-          for (int i = 0; i < _puzzleState.gridSize; i++)
-            Expanded(
-              child: _SingleIndex(
-                index: i,
-                key: Key((i + _puzzleState.gridSize).toString()),
-                highlight:
-                    i + _puzzleState.gridSize == _puzzleState.highlightedPrompt,
-                isSolved: _puzzleState.correctRows.contains(i),
-                onTap: () {
-                  _puzzleState.jumpToPrompt(i + _puzzleState.gridSize);
-                },
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SingleIndex extends StatelessWidget {
-  final int index;
-  final bool isSolved;
-  final bool highlight;
-  final VoidCallback onTap;
-
-  const _SingleIndex(
-      {Key? key,
-      required this.index,
-      this.isSolved = false,
-      this.highlight = false,
-      required this.onTap})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _accentColor = Theme.of(context).colorScheme.secondary;
-    return Center(
-      child: InkResponse(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: highlight ? Border.all(color: _accentColor) : null),
-          child: isSolved
-              ? Icon(
-                  Icons.done,
-                  color: _accentColor,
-                )
-              : Text(
-                  "${index + 1}",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: highlight ? _accentColor : null),
-                  textAlign: TextAlign.center,
-                ),
-        ),
-      ),
-    );
-  }
 }

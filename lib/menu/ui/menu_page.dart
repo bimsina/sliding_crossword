@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
-import 'package:sliding_crossword/core/theme/ui/theme_selector_button.dart';
+import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/puzzle/ui/puzzle_page.dart';
@@ -32,6 +33,12 @@ class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text("Create your puzzle"),
+      ),
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -51,10 +58,19 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      "Sliding Puzzle",
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+    final _themeState = Provider.of<ThemeNotifier>(context);
+    final color = _themeState.selectedTheme.accentColor;
+    return ResponsiveLayoutBuilder(
+        small: (_, __) => _logo(100, color),
+        medium: (_, __) => _logo(150, color),
+        large: (_, __) => _logo(250, color));
+  }
+
+  Widget _logo(double height, Color color) {
+    return SvgPicture.asset(
+      "assets/images/logo.svg",
+      height: height,
+      color: color,
     );
   }
 }
@@ -66,12 +82,12 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Expanded(child: Center(child: _Title())),
         Expanded(
-          flex: 3,
-          child: Stack(
-            fit: StackFit.expand,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const _Title(),
+              const SizedBox(height: 40),
               _MenuItemsWidget(
                 onMenuItemTap: (item) {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
@@ -79,11 +95,10 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
                   }));
                 },
               ),
-              const Positioned(
-                  bottom: 8, right: 0, child: ThemeSelectorButton())
             ],
           ),
         ),
+        const _BottomRow(),
       ],
     );
   }
@@ -107,18 +122,20 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
         children: [
           const Expanded(child: _Title()),
           Expanded(
-            child: Stack(
-              fit: StackFit.expand,
+            child: Column(
               children: [
-                _MenuItemsWidget(
-                  onMenuItemTap: (item) {
-                    setState(() {
-                      _selectedItem = item;
-                    });
-                  },
+                Expanded(
+                  child: Center(
+                    child: _MenuItemsWidget(
+                      onMenuItemTap: (item) {
+                        setState(() {
+                          _selectedItem = item;
+                        });
+                      },
+                    ),
+                  ),
                 ),
-                const Positioned(
-                    bottom: 8, right: 0, child: ThemeSelectorButton())
+                const _BottomRow(),
               ],
             ),
           ),
@@ -282,6 +299,25 @@ class _MenuItemPuzzleSelector extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _BottomRow extends StatelessWidget {
+  const _BottomRow({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+              onPressed: () {}, icon: const Icon(Icons.info_outline_rounded)),
+          const ThemeSelectorButton()
+        ],
       ),
     );
   }

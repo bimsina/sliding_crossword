@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -46,8 +47,14 @@ class PuzzleState extends ChangeNotifier {
 
   PuzzlePageState _state = PuzzlePageState.playing;
   PuzzlePageState get state => _state;
+
   set state(PuzzlePageState state) {
     _state = state;
+    if (state == PuzzlePageState.playing) {
+      resumeTimer();
+    } else {
+      pauseTimer();
+    }
     notifyListeners();
   }
 
@@ -67,9 +74,35 @@ class PuzzleState extends ChangeNotifier {
     notifyListeners();
   }
 
+  late Timer _timer;
+  Duration _timeElapsed = const Duration(seconds: 0);
+  Duration get timeElapsed => _timeElapsed;
+
   PuzzleState(this._puzzle) {
     _gridSize = _puzzle.gridSize;
+    _initTimer();
     _generateTiles();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  _initTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _timeElapsed += const Duration(seconds: 1);
+      notifyListeners();
+    });
+  }
+
+  pauseTimer() {
+    _timer.cancel();
+  }
+
+  resumeTimer() {
+    _initTimer();
   }
 
   _generateTiles() {
