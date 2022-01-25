@@ -61,16 +61,17 @@ class PuzzlePagePresenter extends StatelessWidget {
             _PromptSelector(),
           ],
         ),
-        large: (context, child) => Column(
+        large: (context, child) => Row(
           children: [
+            const Expanded(child: _TimerAndMoves()),
             Expanded(
-                child: Row(
-              children: const [
-                Expanded(child: _TimerAndMoves()),
-                Expanded(flex: 2, child: _MainPuzzle()),
-              ],
-            )),
-            const _PromptSelector(),
+                flex: 2,
+                child: Column(
+                  children: const [
+                    Expanded(child: _MainPuzzle()),
+                    _PromptSelector(),
+                  ],
+                )),
           ],
         ),
       )),
@@ -191,15 +192,26 @@ class _PromptSelectorPresenter extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back_ios)),
             Expanded(
               child: PageView.builder(
+                  physics: const BouncingScrollPhysics(),
                   controller: controller,
                   itemCount: prompts.length,
                   onPageChanged: onPageChanged,
                   itemBuilder: (context, index) {
-                    return Center(
-                      child: Text(
-                        prompts[index].prompt,
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          prompts[index].prompt,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          index < prompts.length / 2
+                              ? "${index + 1} Down"
+                              : "${index + 1 - prompts.length ~/ 2} Across",
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                      ],
                     );
                   }),
             ),
@@ -239,33 +251,36 @@ class _MainPuzzle extends StatelessWidget {
             aspectRatio: 1,
             child: Stack(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _isCrossword
-                      ? Column(
-                          children: [
-                            const _DownIndexes(),
-                            const SizedBox(height: 8),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  const _AcrossIndexes(),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: _puzzleState.tiles.isEmpty
-                                        ? const SizedBox.shrink()
-                                        : _mainPuzzle(
-                                            context, _puzzleState.gridSize),
-                                  ),
-                                ],
+                IgnorePointer(
+                  ignoring: _puzzleState.state == PuzzlePageState.paused,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _isCrossword
+                        ? Column(
+                            children: [
+                              const _DownIndexes(),
+                              const SizedBox(height: 8),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    const _AcrossIndexes(),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: _puzzleState.tiles.isEmpty
+                                          ? const SizedBox.shrink()
+                                          : _mainPuzzle(
+                                              context, _puzzleState.gridSize),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: _mainPuzzle(context, _puzzleState.gridSize),
-                        ),
+                            ],
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: _mainPuzzle(context, _puzzleState.gridSize),
+                          ),
+                  ),
                 ),
                 AnimatedScale(
                   scale: _puzzleState.state == PuzzlePageState.playing ? 0 : 1,
@@ -275,8 +290,17 @@ class _MainPuzzle extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(8.0)),
+                        shape: _puzzleState.state == PuzzlePageState.playing
+                            ? BoxShape.circle
+                            : BoxShape.rectangle,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.4),
+                        borderRadius:
+                            _puzzleState.state == PuzzlePageState.playing
+                                ? null
+                                : BorderRadius.circular(8.0)),
                     child: IconButton(
                         autofocus: true,
                         iconSize: 150,
@@ -284,7 +308,10 @@ class _MainPuzzle extends StatelessWidget {
                           _puzzleState.state = PuzzlePageState.playing;
                         },
                         tooltip: "Resume game",
-                        icon: const Icon(Icons.play_arrow_rounded)),
+                        icon: Icon(
+                          Icons.play_arrow_rounded,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        )),
                   ),
                 ),
               ],
@@ -378,6 +405,7 @@ class _SingleIndex extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _accentColor = Theme.of(context).colorScheme.secondary;
     return Center(
       child: InkResponse(
         onTap: onTap,
@@ -386,17 +414,17 @@ class _SingleIndex extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: highlight ? Border.all(color: Colors.green) : null),
+              border: highlight ? Border.all(color: _accentColor) : null),
           child: isSolved
-              ? const Icon(
+              ? Icon(
                   Icons.done,
-                  color: Colors.green,
+                  color: _accentColor,
                 )
               : Text(
                   "${index + 1}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: highlight ? Colors.green : null),
+                      color: highlight ? _accentColor : null),
                   textAlign: TextAlign.center,
                 ),
         ),

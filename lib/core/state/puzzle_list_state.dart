@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
 
 class PuzzleListState extends ChangeNotifier {
-  late List<Puzzle> _puzzles;
+  late List<CrosswordPuzzle> _puzzles;
 
-  List<Puzzle> get puzzles => _puzzles;
+  List<CrosswordPuzzle> get puzzles => _puzzles;
   PuzzleListState() {
     _puzzles = [
       CrosswordPuzzle(title: "Sample Puzzle", gridSize: 4, across: [

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/puzzle/models/tile.dart';
@@ -56,7 +57,7 @@ class PuzzleWidget extends StatelessWidget {
             tile: tile,
             tileColor: _puzzleState.correctColumns.contains(_grid.x) ||
                     _puzzleState.correctRows.contains(_grid.y)
-                ? Colors.green
+                ? Theme.of(context).colorScheme.secondary
                 : null,
             onTap: () {
               _puzzleState.moveTile(index);
@@ -93,10 +94,10 @@ class _PuzzleTile extends StatelessWidget {
       width: tileSize,
       child: tile.value == null
           ? const SizedBox.shrink()
-          : MouseRegion(
-              cursor: SystemMouseCursors.click,
+          : InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(8.0),
               child: GestureDetector(
-                onTap: onTap,
                 onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
                         swipeDirection == SwipeDirection.right)
                     ? (details) {
@@ -131,13 +132,24 @@ class _PuzzleTile extends StatelessWidget {
                             top: 4,
                             child: Text(
                               "${int.parse(tile.id) + 1}",
-                              style: Theme.of(context).textTheme.caption,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption!
+                                  .copyWith(
+                                      color: tileColor == null
+                                          ? null
+                                          : Theme.of(context)
+                                              .scaffoldBackgroundColor),
                             )),
                       Center(
-                        child: Text(
+                        child: AutoSizeText(
                           tile.value!.toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: tileColor == null
+                                  ? null
+                                  : Theme.of(context).scaffoldBackgroundColor),
                         ),
                       ),
                     ],

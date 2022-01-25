@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
+import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
+import 'package:sliding_crossword/core/theme/ui/theme_selector_button.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/puzzle/ui/puzzle_page.dart';
@@ -67,12 +69,19 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
         const Expanded(child: Center(child: _Title())),
         Expanded(
           flex: 3,
-          child: _MenuItemsWidget(
-            onMenuItemTap: (item) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                return _MenuItemPuzzleSelector(item: item);
-              }));
-            },
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              _MenuItemsWidget(
+                onMenuItemTap: (item) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                    return _MenuItemPuzzleSelector(item: item);
+                  }));
+                },
+              ),
+              const Positioned(
+                  bottom: 8, right: 0, child: ThemeSelectorButton())
+            ],
           ),
         ),
       ],
@@ -98,12 +107,19 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
         children: [
           const Expanded(child: _Title()),
           Expanded(
-            child: _MenuItemsWidget(
-              onMenuItemTap: (item) {
-                setState(() {
-                  _selectedItem = item;
-                });
-              },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _MenuItemsWidget(
+                  onMenuItemTap: (item) {
+                    setState(() {
+                      _selectedItem = item;
+                    });
+                  },
+                ),
+                const Positioned(
+                    bottom: 8, right: 0, child: ThemeSelectorButton())
+              ],
             ),
           ),
           AnimatedSize(
@@ -144,7 +160,6 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TabBar(
-                  indicatorSize: TabBarIndicatorSize.label,
                   onTap: (int value) {
                     setState(() {
                       _isCrossWord = value == 0;
@@ -245,9 +260,10 @@ class _MenuItemPuzzleSelector extends StatelessWidget {
                         itemCount: _puzzles.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Card(
+                            elevation: 0,
                             child: ListTile(
                               title: Text(
-                                (_puzzles[0] as CrosswordPuzzle).title,
+                                _puzzles[index].title,
                                 textAlign: TextAlign.center,
                               ),
                               trailing:
@@ -255,9 +271,7 @@ class _MenuItemPuzzleSelector extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (_) => PuzzlePage(
-                                          puzzle: Provider.of<PuzzleListState>(
-                                                  context)
-                                              .puzzles[0],
+                                          puzzle: _puzzles[index],
                                         )));
                               },
                             ),
