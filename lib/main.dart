@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,13 @@ import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
 import 'package:sliding_crossword/menu/ui/menu_page.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => PuzzleListState()),
     ChangeNotifierProvider(create: (_) => ThemeNotifier())
