@@ -16,7 +16,7 @@ class PuzzlePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PuzzleState>(
-      create: (_) => PuzzleState(puzzle),
+      create: (context) => PuzzleState(puzzle, context),
       child: const PuzzlePagePresenter(),
     );
   }

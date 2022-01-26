@@ -78,7 +78,9 @@ class PuzzleState extends ChangeNotifier {
   Duration _timeElapsed = const Duration(seconds: 0);
   Duration get timeElapsed => _timeElapsed;
 
-  PuzzleState(this._puzzle) {
+  final BuildContext _context;
+
+  PuzzleState(this._puzzle, this._context) {
     _gridSize = _puzzle.gridSize;
     _initTimer();
     _generateTiles();
@@ -247,7 +249,21 @@ class PuzzleState extends ChangeNotifier {
 
     if (_correctColumns.length == _gridSize &&
         _correctRows.length == _gridSize) {
-      print('You win!');
+      pauseTimer();
+      showDialog(
+          context: _context,
+          builder: (_) => AlertDialog(
+                title: const Text("You win!"),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text("OK"),
+                    onPressed: () {
+                      Navigator.of(_context).pop();
+                      Navigator.of(_context).pop();
+                    },
+                  )
+                ],
+              ));
     }
     notifyListeners();
   }

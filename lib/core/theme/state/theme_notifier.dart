@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_crossword/core/theme/models/custom_theme.dart';
 
 const List<CustomTheme> _availableThemes = [
   CustomTheme(
-      id: 'default_dark',
-      backgroundColor: Color(0xff181818),
+      id: 'dark_green',
+      backgroundColor: Color(0xff202020),
       accentColor: Color(0xff1ed760),
       brightness: Brightness.dark,
-      tileColor: Color(0xff000000)),
+      tileColor: Color(0xff313131)),
+  CustomTheme(
+      id: 'play_green',
+      backgroundColor: Color(0xff1e1e1e),
+      accentColor: Color(0xff00a470),
+      brightness: Brightness.dark,
+      tileColor: Color(0xff303030)),
+  CustomTheme(
+      id: 'dark_blue',
+      backgroundColor: Color(0xff222222),
+      accentColor: Color(0xff0077d3),
+      brightness: Brightness.dark,
+      tileColor: Color(0xff333335)),
   CustomTheme(
       id: 'amoled_black',
       backgroundColor: Colors.black,
@@ -17,9 +28,9 @@ const List<CustomTheme> _availableThemes = [
       brightness: Brightness.dark,
       tileColor: Color(0xff3a3a3c)),
   CustomTheme(
-      id: 'default_white',
+      id: 'white_blue',
       backgroundColor: Color(0xfff8f9fa),
-      accentColor: Color(0xff4285f4),
+      accentColor: Color(0xff0468d7),
       brightness: Brightness.light,
       tileColor: Color(0xffffffff)),
 ];
@@ -32,7 +43,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   ThemeData get theme => ThemeData(
       brightness: _selectedTheme.brightness,
-      fontFamily: GoogleFonts.openSans().fontFamily,
+      fontFamily: "GoogleSans",
       scaffoldBackgroundColor: _selectedTheme.backgroundColor,
       cardColor: _selectedTheme.tileColor,
       colorScheme: _selectedTheme.brightness == Brightness.light
@@ -100,6 +111,7 @@ class ThemeNotifier extends ChangeNotifier {
         _preferences.getString('themeId') ?? _availableThemes.first.id;
     _selectedTheme =
         _availableThemes.firstWhere((theme) => theme.id == _persistedThemeId);
+    notifyListeners();
   }
 
   void setTheme(CustomTheme theme) {

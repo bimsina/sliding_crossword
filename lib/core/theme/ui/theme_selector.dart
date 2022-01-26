@@ -13,11 +13,8 @@ class ThemeSelectorButton extends StatelessWidget {
         IconButton(
             onPressed: () {
               showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
                   context: context,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))),
                   builder: (context) => const _ThemeSelectorDialog());
             },
             icon: const Icon(Icons.palette_rounded)),
@@ -33,12 +30,17 @@ class _ThemeSelectorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final _themeState = Provider.of<ThemeNotifier>(context);
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 40.0),
+      padding: const EdgeInsets.symmetric(vertical: 40.0),
+      decoration: BoxDecoration(
+        color: _themeState.selectedTheme.backgroundColor,
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text("Select theme",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           const SizedBox(height: 40),
           SizedBox(
             height: 100,

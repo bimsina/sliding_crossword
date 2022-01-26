@@ -15,7 +15,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: 6.0.2
   equatable: 2.0.3
-  google_fonts: 2.2.0
   json_annotation: 4.4.0
   auto_size_text: 3.0.0
   flutter_svg: 1.0.3
@@ -33,3 +32,17 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+
+  fonts:
+    - family: GoogleSans
+      fonts:
+        - asset: assets/fonts/GoogleSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/GoogleSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/GoogleSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GoogleSans-Italic.ttf
+          weight: 400
+          style: italic

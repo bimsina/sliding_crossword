@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,15 +21,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final _themeState = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
+      scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       title: 'Sliding Puzzle',
       theme: _themeState.theme,
       builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-          value: _themeState.theme.brightness == Brightness.dark
-              ? SystemUiOverlayStyle.light
-              : SystemUiOverlayStyle.dark,
+          value: (_themeState.theme.brightness == Brightness.dark
+                  ? SystemUiOverlayStyle.light
+                  : SystemUiOverlayStyle.dark)
+              .copyWith(
+                  systemNavigationBarColor:
+                      _themeState.selectedTheme.backgroundColor),
           child: child ?? Container()),
       home: const MenuPage(),
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

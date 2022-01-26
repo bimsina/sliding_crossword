@@ -33,12 +33,6 @@ class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        icon: const Icon(Icons.add),
-        label: const Text("Create your puzzle"),
-      ),
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -67,10 +61,29 @@ class _Title extends StatelessWidget {
   }
 
   Widget _logo(double height, Color color) {
-    return SvgPicture.asset(
-      "assets/images/logo.svg",
-      height: height,
-      color: color,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SvgPicture.asset(
+          "assets/images/logo.svg",
+          height: height,
+          color: color,
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          children: [
+            Text(
+              "Sliding ",
+              style: TextStyle(fontSize: height * 0.3, color: color),
+            ),
+            Text(
+              "Crossword",
+              style: TextStyle(
+                  fontSize: height * 0.3, fontWeight: FontWeight.bold),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
@@ -315,7 +328,13 @@ class _BottomRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-              onPressed: () {}, icon: const Icon(Icons.info_outline_rounded)),
+              onPressed: () {}, icon: const Icon(Icons.settings_rounded)),
+          FloatingActionButton.extended(
+            heroTag: 'create_puzzle',
+            onPressed: () {},
+            icon: const Icon(Icons.add),
+            label: const Text("Create your puzzle"),
+          ),
           const ThemeSelectorButton()
         ],
       ),
