@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
-import 'package:sliding_crossword/puzzle/state/puzzle_state.dart';
-import 'package:sliding_crossword/puzzle/ui/widgets/across_and_down_indexes.dart';
-import 'package:sliding_crossword/puzzle/ui/widgets/puzzle_widget.dart';
-import 'package:sliding_crossword/puzzle/ui/widgets/timer_and_moves.dart';
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
+import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
+import 'widgets/across_and_down_indexes.dart';
 import 'widgets/prompt_selector.dart';
+import 'widgets/puzzle_widget.dart';
+import 'widgets/timer_and_moves.dart';
 
 class PuzzlePage extends StatelessWidget {
   final Puzzle puzzle;

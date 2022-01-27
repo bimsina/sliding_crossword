@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
-
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 export 'question/question.dart';
 
 part 'crossword_puzzle.g.dart';

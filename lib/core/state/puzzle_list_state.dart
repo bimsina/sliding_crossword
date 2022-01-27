@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 
 class PuzzleListState extends ChangeNotifier {
   late List<CrosswordPuzzle> _puzzles;

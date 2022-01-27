@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_crossword/puzzle/state/puzzle_state.dart';
+import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
 class TimerAndMoves extends StatelessWidget {
   const TimerAndMoves({Key? key}) : super(key: key);

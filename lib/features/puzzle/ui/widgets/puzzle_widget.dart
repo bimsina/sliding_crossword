@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_crossword/puzzle/models/tile.dart';
-import 'package:sliding_crossword/puzzle/state/puzzle_state.dart';
+import 'package:sliding_crossword/features/puzzle/models/tile.dart';
+import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
 class PuzzleWidget extends StatelessWidget {
   final double tileSize;

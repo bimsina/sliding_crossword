@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
-import 'package:sliding_crossword/menu/ui/menu_page.dart';
 
+import 'features/menu/ui/menu_page.dart';
 import 'firebase_options.dart';
 
 void main() async {

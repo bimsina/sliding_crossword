@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:sliding_crossword/puzzle/models/grid.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
-import 'package:sliding_crossword/puzzle/models/tile.dart';
 import 'package:collection/collection.dart';
+import 'package:sliding_crossword/features/puzzle/models/grid.dart';
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
+import 'package:sliding_crossword/features/puzzle/models/tile.dart';
 
 enum PuzzlePageState { playing, paused }
 

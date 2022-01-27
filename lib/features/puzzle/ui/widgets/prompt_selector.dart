@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
-import 'package:sliding_crossword/puzzle/state/puzzle_state.dart';
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
+import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
 class PromptSelector extends StatelessWidget {
   const PromptSelector({Key? key}) : super(key: key);

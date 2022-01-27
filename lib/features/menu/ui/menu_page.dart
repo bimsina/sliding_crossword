@@ -6,8 +6,8 @@ import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
 import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
-import 'package:sliding_crossword/puzzle/models/puzzle/puzzle.dart';
-import 'package:sliding_crossword/puzzle/ui/puzzle_page.dart';
+import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
+import 'package:sliding_crossword/features/puzzle/ui/puzzle_page.dart';
 
 class MenuItem extends Equatable {
   final String title;
