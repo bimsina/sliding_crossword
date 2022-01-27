@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <group android:scaleX="0.043242186"
+      android:scaleY="0.043242186"
+      android:translateX="31.86"
+      android:translateY="31.86">
+    <path
+        android:pathData="M26,34C26,29.58 29.58,26 34,26H322C326.42,26 330,29.58 330,34V322C330,326.42 326.42,330 322,330H34C29.58,330 26,326.42 26,322V34Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M360,34C360,29.58 363.58,26 368,26H656C660.42,26 664,29.58 664,34V322C664,326.42 660.42,330 656,330H368C363.58,330 360,326.42 360,322V34Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M694,34C694,29.58 697.58,26 702,26H990C994.42,26 998,29.58 998,34V322C998,326.42 994.42,330 990,330H702C697.58,330 694,326.42 694,322V34Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M26,368C26,363.58 29.58,360 34,360H322C326.42,360 330,363.58 330,368V656C330,660.42 326.42,664 322,664H34C29.58,664 26,660.42 26,656V368Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M360,368C360,363.58 363.58,360 368,360H656C660.42,360 664,363.58 664,368V656C664,660.42 660.42,664 656,664H368C363.58,664 360,660.42 360,656V368Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M694,368C694,363.58 697.58,360 702,360H990C994.42,360 998,363.58 998,368V656C998,660.42 994.42,664 990,664H702C697.58,664 694,660.42 694,656V368Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M26,702C26,697.58 29.58,694 34,694H322C326.42,694 330,697.58 330,702V990C330,994.42 326.42,998 322,998H34C29.58,998 26,994.42 26,990V702Z"
+        android:fillColor="#1ED760"/>
+    <path
+        android:pathData="M360,702C360,697.58 363.58,694 368,694H656C660.42,694 664,697.58 664,702V990C664,994.42 660.42,998 656,998H368C363.58,998 360,994.42 360,990V702Z"
+        android:fillColor="#1ED760"/>
+  </group>
+</vector>

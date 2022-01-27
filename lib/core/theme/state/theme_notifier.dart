@@ -10,6 +10,12 @@ const List<CustomTheme> _availableThemes = [
       brightness: Brightness.dark,
       tileColor: Color(0xff313131)),
   CustomTheme(
+      id: 'white_blue',
+      backgroundColor: Color(0xfff8f9fa),
+      accentColor: Color(0xff0468d7),
+      brightness: Brightness.light,
+      tileColor: Color(0xffffffff)),
+  CustomTheme(
       id: 'play_green',
       backgroundColor: Color(0xff1e1e1e),
       accentColor: Color(0xff00a470),
@@ -27,12 +33,6 @@ const List<CustomTheme> _availableThemes = [
       accentColor: Colors.yellow,
       brightness: Brightness.dark,
       tileColor: Color(0xff3a3a3c)),
-  CustomTheme(
-      id: 'white_blue',
-      backgroundColor: Color(0xfff8f9fa),
-      accentColor: Color(0xff0468d7),
-      brightness: Brightness.light,
-      tileColor: Color(0xffffffff)),
 ];
 
 class ThemeNotifier extends ChangeNotifier {
@@ -52,7 +52,7 @@ class ThemeNotifier extends ChangeNotifier {
           : const ColorScheme.dark()
               .copyWith(secondary: _selectedTheme.accentColor),
       focusColor: _selectedTheme.accentColor.withOpacity(0.1),
-      hoverColor: _selectedTheme.accentColor.withOpacity(0.2),
+      hoverColor: _selectedTheme.accentColor.withOpacity(0.01),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: _selectedTheme.accentColor.withOpacity(0.11),
@@ -73,6 +73,8 @@ class ThemeNotifier extends ChangeNotifier {
             ? Colors.black
             : Colors.white,
       ),
+      highlightColor: _selectedTheme.accentColor.withOpacity(0.01),
+      splashColor: _selectedTheme.accentColor.withOpacity(0.1),
       appBarTheme: AppBarTheme(
         elevation: 0,
         centerTitle: true,
