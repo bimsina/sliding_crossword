@@ -11,6 +11,8 @@ import 'widgets/timer_and_moves.dart';
 
 class PuzzlePage extends StatelessWidget {
   final Puzzle puzzle;
+
+  /// Add support for a [puzzleId] to be passed in
   const PuzzlePage({Key? key, required this.puzzle}) : super(key: key);
 
   @override

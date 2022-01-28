@@ -1,25 +1,13 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
-import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
+import 'package:sliding_crossword/core/theme/ui/app_logo.dart';
 import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
+import 'package:sliding_crossword/features/create_puzzle/ui/create_puzzle_button.dart';
+import 'package:sliding_crossword/features/menu/models/menu_item.dart';
+import 'package:sliding_crossword/features/menu/ui/puzzles_list_selector.dart';
+import 'package:sliding_crossword/features/profile/ui/profile_icon.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
-import 'package:sliding_crossword/features/puzzle/ui/puzzle_page.dart';
-
-class MenuItem extends Equatable {
-  final String title;
-  final int gridSize;
-  final bool? isNew;
-
-  const MenuItem(
-      {required this.title, required this.gridSize, this.isNew = false});
-
-  @override
-  List<Object?> get props => [title, gridSize, isNew];
-}
 
 const _menuItems = [
   MenuItem(title: "Easy", gridSize: 3),
@@ -36,54 +24,19 @@ class MenuPage extends StatelessWidget {
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
-          child: ResponsiveLayoutBuilder(
-            small: (ctxt, child) => const _MobileAndTabletMenuBuilder(),
-            large: (ctxt, child) => const _DesktopMenuBuilder(),
-            medium: (ctxt, child) => const _MobileAndTabletMenuBuilder(),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ResponsiveLayoutBuilder(
+                small: (ctxt, child) => const _MobileAndTabletMenuBuilder(),
+                large: (ctxt, child) => const _DesktopMenuBuilder(),
+                medium: (ctxt, child) => const _MobileAndTabletMenuBuilder(),
+              ),
+              const Positioned(right: 8, top: 8, child: ProfileIcon()),
+            ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Title extends StatelessWidget {
-  const _Title({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final _themeState = Provider.of<ThemeNotifier>(context);
-    final color = _themeState.selectedTheme.accentColor;
-    return ResponsiveLayoutBuilder(
-        small: (_, __) => _logo(100, color),
-        medium: (_, __) => _logo(150, color),
-        large: (_, __) => _logo(250, color));
-  }
-
-  Widget _logo(double height, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          "assets/images/logo.svg",
-          height: height,
-          color: color,
-        ),
-        const SizedBox(height: 10),
-        Wrap(
-          children: [
-            Text(
-              "Sliding ",
-              style: TextStyle(fontSize: height * 0.3, color: color),
-            ),
-            Text(
-              "Crossword",
-              style: TextStyle(
-                  fontSize: height * 0.3, fontWeight: FontWeight.bold),
-            ),
-          ],
-        )
-      ],
     );
   }
 }
@@ -99,13 +52,11 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const _Title(),
+              const AppLogo(),
               const SizedBox(height: 40),
               _MenuItemsWidget(
                 onMenuItemTap: (item) {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                    return _MenuItemPuzzleSelector(item: item);
-                  }));
+                  context.push('/puzzles-list', extra: item);
                 },
               ),
             ],
@@ -133,7 +84,7 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          const Expanded(child: _Title()),
+          const Expanded(child: AppLogo()),
           Expanded(
             child: Column(
               children: [
@@ -159,7 +110,7 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
                   ? const SizedBox.shrink()
                   : SizedBox(
                       width: MediaQuery.of(context).size.width * 0.3,
-                      child: _MenuItemPuzzleSelector(item: _selectedItem!))),
+                      child: PuzzlesListSelectorPage(item: _selectedItem!))),
         ],
       ),
     );
@@ -167,7 +118,7 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
 }
 
 class _MenuItemsWidget extends StatefulWidget {
-  final Function onMenuItemTap;
+  final Function(MenuItem) onMenuItemTap;
   const _MenuItemsWidget({Key? key, required this.onMenuItemTap})
       : super(key: key);
 
@@ -220,10 +171,8 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                           if (_isCrossWord) {
                             widget.onMenuItemTap(item);
                           } else {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => PuzzlePage(
-                                      puzzle: Puzzle(gridSize: item.gridSize),
-                                    )));
+                            context.push('/puzzle',
+                                extra: Puzzle(gridSize: item.gridSize));
                           }
                         },
                       ),
@@ -257,66 +206,6 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
   }
 }
 
-class _MenuItemPuzzleSelector extends StatelessWidget {
-  final MenuItem item;
-  final bool showAppBar;
-
-  _MenuItemPuzzleSelector(
-      {Key? key, required this.item, this.showAppBar = true})
-      : super(key: key);
-
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  Widget build(BuildContext context) {
-    final _allPuzzles = Provider.of<PuzzleListState>(context).puzzles;
-    final _puzzles = _allPuzzles
-        .where((puzzle) => puzzle.gridSize == item.gridSize)
-        .toList();
-    return Scaffold(
-      appBar: AppBar(title: Text(item.title)),
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: Center(
-              child: _puzzles.isEmpty
-                  ? const Text("No Puzzles Found")
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        controller: _scrollController,
-                        itemCount: _puzzles.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            elevation: 0,
-                            child: ListTile(
-                              title: Text(
-                                _puzzles[index].title,
-                                textAlign: TextAlign.center,
-                              ),
-                              trailing:
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => PuzzlePage(
-                                          puzzle: _puzzles[index],
-                                        )));
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _BottomRow extends StatelessWidget {
   const _BottomRow({Key? key}) : super(key: key);
 
@@ -329,12 +218,7 @@ class _BottomRow extends StatelessWidget {
         children: [
           IconButton(
               onPressed: () {}, icon: const Icon(Icons.settings_rounded)),
-          FloatingActionButton.extended(
-            heroTag: 'create_puzzle',
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-            label: const Text("Create your puzzle"),
-          ),
+          const CreatePuzzleButton(),
           const ThemeSelectorButton()
         ],
       ),

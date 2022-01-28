@@ -69,7 +69,7 @@ class _ThemeSelectorDialog extends StatelessWidget {
                           shape: BoxShape.circle),
                       child: _themeState.selectedTheme == _theme
                           ? Icon(
-                              Icons.check,
+                              Icons.check_circle,
                               color: _theme.accentColor,
                               size: 40,
                             )

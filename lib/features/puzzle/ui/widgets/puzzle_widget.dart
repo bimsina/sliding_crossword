@@ -94,35 +94,35 @@ class _PuzzleTile extends StatelessWidget {
       width: tileSize,
       child: tile.value == null
           ? const SizedBox.shrink()
-          : InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(8.0),
-              child: GestureDetector(
-                onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
-                        swipeDirection == SwipeDirection.right)
-                    ? (details) {
-                        if ((details.velocity.pixelsPerSecond.dx > 10 &&
-                                swipeDirection == SwipeDirection.right) ||
-                            (details.velocity.pixelsPerSecond.dx < 10 &&
-                                swipeDirection == SwipeDirection.left)) {
-                          onTap?.call();
+          : Card(
+              color: tileColor,
+              elevation: 0,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(8.0),
+                child: GestureDetector(
+                  onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
+                          swipeDirection == SwipeDirection.right)
+                      ? (details) {
+                          if ((details.velocity.pixelsPerSecond.dx > 10 &&
+                                  swipeDirection == SwipeDirection.right) ||
+                              (details.velocity.pixelsPerSecond.dx < 10 &&
+                                  swipeDirection == SwipeDirection.left)) {
+                            onTap?.call();
+                          }
                         }
-                      }
-                    : null,
-                onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
-                        swipeDirection == SwipeDirection.up)
-                    ? (details) {
-                        if ((details.velocity.pixelsPerSecond.dy > 10 &&
-                                swipeDirection == SwipeDirection.down) ||
-                            (details.velocity.pixelsPerSecond.dy < 10 &&
-                                swipeDirection == SwipeDirection.up)) {
-                          onTap?.call();
+                      : null,
+                  onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
+                          swipeDirection == SwipeDirection.up)
+                      ? (details) {
+                          if ((details.velocity.pixelsPerSecond.dy > 10 &&
+                                  swipeDirection == SwipeDirection.down) ||
+                              (details.velocity.pixelsPerSecond.dy < 10 &&
+                                  swipeDirection == SwipeDirection.up)) {
+                            onTap?.call();
+                          }
                         }
-                      }
-                    : null,
-                child: Card(
-                  color: tileColor,
-                  elevation: 0,
+                      : null,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [

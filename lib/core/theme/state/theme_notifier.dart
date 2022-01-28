@@ -41,57 +41,6 @@ class ThemeNotifier extends ChangeNotifier {
 
   List<CustomTheme> get availableThemes => _availableThemes;
 
-  ThemeData get theme => ThemeData(
-      brightness: _selectedTheme.brightness,
-      fontFamily: "GoogleSans",
-      scaffoldBackgroundColor: _selectedTheme.backgroundColor,
-      cardColor: _selectedTheme.tileColor,
-      colorScheme: _selectedTheme.brightness == Brightness.light
-          ? const ColorScheme.light()
-              .copyWith(secondary: _selectedTheme.accentColor)
-          : const ColorScheme.dark()
-              .copyWith(secondary: _selectedTheme.accentColor),
-      focusColor: _selectedTheme.accentColor.withOpacity(0.1),
-      hoverColor: _selectedTheme.accentColor.withOpacity(0.01),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: _selectedTheme.accentColor.withOpacity(0.11),
-          foregroundColor: _selectedTheme.accentColor,
-          highlightElevation: 0,
-          hoverElevation: 0,
-          focusElevation: 0,
-          elevation: 0),
-      tabBarTheme: TabBarTheme(
-        indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(
-            width: 2.0,
-            color: _selectedTheme.accentColor,
-          ),
-        ),
-        indicatorSize: TabBarIndicatorSize.label,
-        labelColor: _selectedTheme.brightness == Brightness.light
-            ? Colors.black
-            : Colors.white,
-      ),
-      highlightColor: _selectedTheme.accentColor.withOpacity(0.01),
-      splashColor: _selectedTheme.accentColor.withOpacity(0.1),
-      appBarTheme: AppBarTheme(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: _selectedTheme.backgroundColor,
-        titleTextStyle: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: _selectedTheme.brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
-        ),
-        iconTheme: IconThemeData(
-            color: _selectedTheme.brightness == Brightness.light
-                ? Colors.black
-                : Colors.white),
-      ));
-
   late SharedPreferences _preferences;
 
   ThemeNotifier() {
@@ -125,4 +74,84 @@ class ThemeNotifier extends ChangeNotifier {
   Future<void> _persistThemeSelection() async {
     _preferences.setString('themeId', _selectedTheme.id);
   }
+
+  ThemeData get theme => ThemeData(
+      brightness: _selectedTheme.brightness,
+      fontFamily: "GoogleSans",
+      scaffoldBackgroundColor: _selectedTheme.backgroundColor,
+      cardColor: _selectedTheme.tileColor,
+      colorScheme: _selectedTheme.brightness == Brightness.light
+          ? const ColorScheme.light()
+              .copyWith(secondary: _selectedTheme.accentColor)
+          : const ColorScheme.dark()
+              .copyWith(secondary: _selectedTheme.accentColor),
+      focusColor: _selectedTheme.accentColor.withOpacity(0.1),
+      hoverColor: _selectedTheme.accentColor.withOpacity(0.01),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: _selectedTheme.accentColor.withOpacity(0.11),
+          foregroundColor: _selectedTheme.accentColor,
+          highlightElevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          elevation: 0),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+        primary: _selectedTheme.accentColor,
+      )),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+        primary: _selectedTheme.accentColor,
+      )),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+        primary: _selectedTheme.accentColor,
+      )),
+      buttonTheme: ButtonThemeData(
+          buttonColor: _selectedTheme.accentColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0))),
+      tabBarTheme: TabBarTheme(
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(
+            width: 2.0,
+            color: _selectedTheme.accentColor,
+          ),
+        ),
+        indicatorSize: TabBarIndicatorSize.label,
+        labelColor: _selectedTheme.brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: _selectedTheme.tileColor)),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: _selectedTheme.accentColor)),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: _selectedTheme.accentColor,
+        selectionColor: _selectedTheme.accentColor.withOpacity(0.1),
+        selectionHandleColor: _selectedTheme.accentColor,
+      ),
+      highlightColor: _selectedTheme.accentColor.withOpacity(0.01),
+      splashColor: _selectedTheme.accentColor.withOpacity(0.1),
+      snackBarTheme:
+          const SnackBarThemeData(behavior: SnackBarBehavior.floating),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: _selectedTheme.backgroundColor,
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: _selectedTheme.brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
+        ),
+        iconTheme: IconThemeData(
+            color: _selectedTheme.brightness == Brightness.light
+                ? Colors.black
+                : Colors.white),
+      ));
 }

@@ -2,12 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/puzzle_list_state.dart';
+import 'package:sliding_crossword/core/state/user_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
-
-import 'features/menu/ui/menu_page.dart';
+import 'router.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -15,7 +16,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
+
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => UserState()),
     ChangeNotifierProvider(create: (_) => PuzzleListState()),
     ChangeNotifierProvider(create: (_) => ThemeNotifier())
   ], child: const MyApp()));
@@ -27,7 +31,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _themeState = Provider.of<ThemeNotifier>(context);
-    return MaterialApp(
+
+    return MaterialApp.router(
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       title: 'Sliding Puzzle',
@@ -40,7 +47,6 @@ class MyApp extends StatelessWidget {
                   systemNavigationBarColor:
                       _themeState.selectedTheme.backgroundColor),
           child: child ?? Container()),
-      home: const MenuPage(),
     );
   }
 }
