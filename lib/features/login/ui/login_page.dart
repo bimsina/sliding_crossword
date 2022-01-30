@@ -14,30 +14,32 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Sign In to continue"),
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const AppLogo(),
-            const SizedBox(height: 50),
-            _LoginButton(
-                onPressed: () {
-                  _userState.signInWithGoogle(context);
-                },
-                title: "Sign in with Google",
-                icon: FontAwesomeIcons.google,
-                isLoading: _userState.status == AuthStatus.loggingIn),
-            const SizedBox(height: 20),
-            _LoginButton(
-                onPressed: () {
-                  _userState.signInAnonymously(context);
-                },
-                title: "Sign in with Anonymously",
-                icon: Icons.person,
-                isLoading: _userState.status == AuthStatus.loggingIn),
-          ],
+      body: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const AppLogo(),
+              const SizedBox(height: 50),
+              _LoginButton(
+                  onPressed: () {
+                    _userState.signInWithGoogle(context);
+                  },
+                  title: "Sign in with Google",
+                  icon: FontAwesomeIcons.google,
+                  isLoading: _userState.status == AuthStatus.loggingIn),
+              const SizedBox(height: 20),
+              _LoginButton(
+                  onPressed: () {
+                    _userState.signInAnonymously(context);
+                  },
+                  title: "Sign in with Anonymously",
+                  icon: Icons.person,
+                  isLoading: _userState.status == AuthStatus.loggingIn),
+            ],
+          ),
         ),
       ),
     );

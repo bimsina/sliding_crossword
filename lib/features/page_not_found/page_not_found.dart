@@ -8,25 +8,27 @@ class PageNotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AppLogo(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Page not found',
-                style: Theme.of(context).textTheme.headline4,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const AppLogo(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Page not found',
+                  style: Theme.of(context).textTheme.headline4,
+                ),
               ),
-            ),
-            FloatingActionButton.extended(
-                onPressed: () {
-                  context.go('/');
-                },
-                icon: const Icon(Icons.home),
-                label: const Text("Go Home"))
-          ],
+              FloatingActionButton.extended(
+                  onPressed: () {
+                    context.go('/');
+                  },
+                  icon: const Icon(Icons.home),
+                  label: const Text("Go Home"))
+            ],
+          ),
         ),
       ),
     );

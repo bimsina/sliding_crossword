@@ -4,18 +4,34 @@ export 'question/question.dart';
 
 part 'crossword_puzzle.g.dart';
 
-@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+@JsonSerializable(
+    fieldRename: FieldRename.snake, includeIfNull: false, explicitToJson: true)
 class CrosswordPuzzle extends Puzzle {
+  final String id;
   final String title;
 
+  @JsonKey(defaultValue: [])
   final List<Question> across;
+
+  @JsonKey(defaultValue: [])
   final List<Question> down;
+
+  final String authorId;
+
+  final DateTime createdAt;
+
+  @JsonKey(defaultValue: 0)
+  final int timesPlayed;
 
   CrosswordPuzzle({
     required this.title,
     required this.across,
     required this.down,
     required int gridSize,
+    required this.id,
+    required this.authorId,
+    required this.createdAt,
+    this.timesPlayed = 0,
   }) : super(gridSize: gridSize) {
     assert(gridSize > 0);
     assert(across.length == gridSize);

@@ -96,7 +96,6 @@ class _PuzzleTile extends StatelessWidget {
           ? const SizedBox.shrink()
           : Card(
               color: tileColor,
-              elevation: 0,
               child: InkWell(
                 onTap: onTap,
                 borderRadius: BorderRadius.circular(8.0),

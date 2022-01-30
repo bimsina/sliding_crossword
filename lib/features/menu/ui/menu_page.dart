@@ -4,15 +4,15 @@ import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/features/create_puzzle/ui/create_puzzle_button.dart';
 import 'package:sliding_crossword/features/menu/models/menu_item.dart';
-import 'package:sliding_crossword/features/menu/ui/puzzles_list_selector.dart';
+import 'package:sliding_crossword/features/puzzles_list/ui/puzzles_list_page.dart';
 import 'package:sliding_crossword/features/profile/ui/profile_icon.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 
 const _menuItems = [
-  MenuItem(title: "Easy", gridSize: 3),
-  MenuItem(title: "Medium", gridSize: 4),
-  MenuItem(title: "Hard", gridSize: 5),
+  MenuItem(title: "Easy", difficulty: PuzzleDifficulty.easy),
+  MenuItem(title: "Medium", difficulty: PuzzleDifficulty.medium),
+  MenuItem(title: "Hard", difficulty: PuzzleDifficulty.hard),
 ];
 
 class MenuPage extends StatelessWidget {
@@ -110,7 +110,9 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
                   ? const SizedBox.shrink()
                   : SizedBox(
                       width: MediaQuery.of(context).size.width * 0.3,
-                      child: PuzzlesListSelectorPage(item: _selectedItem!))),
+                      child: PuzzlesListPage(
+                          filter: PuzzlesListFilter(
+                              difficulty: _selectedItem!.difficulty)))),
         ],
       ),
     );
@@ -127,7 +129,6 @@ class _MenuItemsWidget extends StatefulWidget {
 }
 
 class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
-  final ScrollController _scrollController = ScrollController();
   bool _isCrossWord = true;
 
   @override
@@ -157,22 +158,22 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                   itemCount: _menuItems.length,
                   key: const Key('menu-items'),
                   shrinkWrap: true,
-                  controller: _scrollController,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) {
                     final item = _menuItems[index];
                     return Card(
-                      elevation: 0,
                       child: ListTile(
                         title: Text(item.title, textAlign: TextAlign.center),
-                        subtitle: Text("${item.gridSize}x${item.gridSize}",
+                        subtitle: Text(
+                            "${item.difficulty.index + 3}x${item.difficulty.index + 3}",
                             textAlign: TextAlign.center),
                         onTap: () {
                           if (_isCrossWord) {
                             widget.onMenuItemTap(item);
                           } else {
                             context.push('/puzzle',
-                                extra: Puzzle(gridSize: item.gridSize));
+                                extra: Puzzle(
+                                    gridSize: item.difficulty.index + 3));
                           }
                         },
                       ),
@@ -188,7 +189,6 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Card(
-                    elevation: 0,
                     child: ListTile(
                       title: const Text("Custom size",
                           textAlign: TextAlign.center),

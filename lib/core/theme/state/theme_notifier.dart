@@ -80,6 +80,7 @@ class ThemeNotifier extends ChangeNotifier {
       fontFamily: "GoogleSans",
       scaffoldBackgroundColor: _selectedTheme.backgroundColor,
       cardColor: _selectedTheme.tileColor,
+      cardTheme: const CardTheme(elevation: 0),
       colorScheme: _selectedTheme.brightness == Brightness.light
           ? const ColorScheme.light()
               .copyWith(secondary: _selectedTheme.accentColor)

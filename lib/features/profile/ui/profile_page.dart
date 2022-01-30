@@ -43,12 +43,14 @@ class _ProfilePagePresenter extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            Center(child: Text('My Puzzles')),
-            Center(child: Text('Under Review')),
-          ],
+        body: const SafeArea(
+          child: TabBarView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              Center(child: Text('My Puzzles')),
+              Center(child: Text('Under Review')),
+            ],
+          ),
         ),
       ),
     );
