@@ -28,8 +28,11 @@ class PuzzleListState extends ChangeNotifier {
     fetchPuzzles();
   }
 
-  fetchPuzzles() {
+  fetchPuzzles({bool clearPuzzles = true}) {
     state = DataFetchState.loading;
+    if (clearPuzzles) {
+      _puzzles.clear();
+    }
 
     final _puzzlesCollection = FirebaseFirestore.instance
         .collection('puzzles_under_review')

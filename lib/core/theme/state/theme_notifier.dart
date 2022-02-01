@@ -16,6 +16,18 @@ const List<CustomTheme> _availableThemes = [
       brightness: Brightness.light,
       tileColor: Color(0xffffffff)),
   CustomTheme(
+      id: 'amoled_black',
+      backgroundColor: Colors.black,
+      accentColor: Colors.yellow,
+      brightness: Brightness.dark,
+      tileColor: Color(0xff3a3a3c)),
+  CustomTheme(
+      id: 'blue_yellow',
+      backgroundColor: Color(0xff2c078c),
+      accentColor: Color(0xfffed420),
+      brightness: Brightness.dark,
+      tileColor: Color(0xff3914b0)),
+  CustomTheme(
       id: 'play_green',
       backgroundColor: Color(0xff1e1e1e),
       accentColor: Color(0xff00a470),
@@ -27,12 +39,6 @@ const List<CustomTheme> _availableThemes = [
       accentColor: Color(0xff0077d3),
       brightness: Brightness.dark,
       tileColor: Color(0xff333335)),
-  CustomTheme(
-      id: 'amoled_black',
-      backgroundColor: Colors.black,
-      accentColor: Colors.yellow,
-      brightness: Brightness.dark,
-      tileColor: Color(0xff3a3a3c)),
 ];
 
 class ThemeNotifier extends ChangeNotifier {

@@ -95,7 +95,9 @@ class _PuzzleTile extends StatelessWidget {
       child: tile.value == null
           ? const SizedBox.shrink()
           : Card(
-              color: tileColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0)),
+              color: tileColor ?? (!tile.canInteract ? Colors.black : null),
               child: InkWell(
                 onTap: onTap,
                 borderRadius: BorderRadius.circular(8.0),
@@ -122,37 +124,40 @@ class _PuzzleTile extends StatelessWidget {
                           }
                         }
                       : null,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      if (_puzzleState.showHints)
-                        Positioned(
-                            left: 4,
-                            top: 4,
-                            child: Text(
-                              "${int.parse(tile.id) + 1}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption!
-                                  .copyWith(
-                                      color: tileColor == null
-                                          ? null
-                                          : Theme.of(context)
-                                              .scaffoldBackgroundColor),
-                            )),
-                      Center(
-                        child: AutoSizeText(
-                          tile.value!.toUpperCase(),
-                          style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: tileColor == null
-                                  ? null
-                                  : Theme.of(context).scaffoldBackgroundColor),
+                  child: !tile.canInteract
+                      ? const SizedBox.shrink()
+                      : Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (_puzzleState.showHints)
+                              Positioned(
+                                  left: 4,
+                                  top: 4,
+                                  child: Text(
+                                    "${int.parse(tile.id) + 1}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                            color: tileColor == null
+                                                ? null
+                                                : Theme.of(context)
+                                                    .scaffoldBackgroundColor),
+                                  )),
+                            Center(
+                              child: AutoSizeText(
+                                tile.value!.toUpperCase(),
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: tileColor == null
+                                        ? null
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ),

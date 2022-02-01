@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/features/create_puzzle/state/create_puzzle_state.dart';
 import 'package:sliding_crossword/features/login/ui/login_page.dart';
+import 'package:sliding_crossword/features/puzzles_list/ui/puzzles_list_page.dart';
 
 class CreatePuzzlePage extends StatelessWidget {
   const CreatePuzzlePage({Key? key}) : super(key: key);
@@ -39,7 +39,7 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     final _state = Provider.of<CreatePuzzleState>(context);
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Form(
         key: _state.formKey,
         child: Padding(
@@ -58,10 +58,13 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
                           DropdownButton<int>(
                             underline: Container(),
                             value: _state.gridSize,
-                            items: <int>[3, 4, 5, 6].map((int value) {
+                            items: PuzzleDifficulty.values
+                                .map((PuzzleDifficulty value) {
                               return DropdownMenuItem<int>(
-                                value: value,
-                                child: Text(value.toString()),
+                                value: value.index + 3,
+                                child: Text(
+                                    "${value.index + 3}x${value.index + 3} : ${value.name}",
+                                    textAlign: TextAlign.center),
                               );
                             }).toList(),
                             onChanged: (val) {
@@ -91,12 +94,14 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
                     const TabBar(tabs: [
                       Tab(text: "Down"),
                       Tab(text: "Across"),
+                      Tab(text: "Puzzle"),
                     ]),
                     Expanded(
                         key: Key("${_state.gridSize}"),
                         child: const TabBarView(children: [
                           _PromptAndAnswerTextFields(isAcross: false),
                           _PromptAndAnswerTextFields(isAcross: true),
+                          _PuzzleTextFields(),
                         ]))
                   ],
                 ),
@@ -120,45 +125,64 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
                     icon: const Icon(Icons.done),
                     label: const Text('Submit'),
                   ),
-                  FloatingActionButton.extended(
-                    heroTag: 'view_puzzle',
-                    onPressed: () {
-                      final _answersList = _state.answerControllers
-                          .map((controller) =>
-                              controller.text.padRight(_state.gridSize, ' '))
-                          .toList();
-
-                      final _downAnswers =
-                          _answersList.sublist(0, _state.gridSize).join();
-                      final _acrossAnswers =
-                          _answersList.sublist(_state.gridSize).join();
-                      String _updatedDownAnswers = "";
-
-                      for (int i = 0; i < _state.gridSize; i++) {
-                        for (int j = 0; j < _state.gridSize; j++) {
-                          _updatedDownAnswers +=
-                              _downAnswers[j * _state.gridSize + i];
-                        }
-                      }
-
-                      showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: (context) {
-                            return _PuzzleRenderer(
-                              downWords: _updatedDownAnswers,
-                              acrossWords: _acrossAnswers,
-                              gridSize: _state.gridSize,
-                            );
-                          });
-                    },
-                    icon: const Icon(Icons.grid_3x3),
-                    label: const Text('Show puzzle'),
-                  ),
                 ],
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PuzzleTextFields extends StatelessWidget {
+  const _PuzzleTextFields({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _state = Provider.of<CreatePuzzleState>(context);
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _state.gridSize,
+          ),
+          itemCount: _state.gridSize * _state.gridSize - 1,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              child: LayoutBuilder(builder: (context, constraints) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _state.tileControllers[index],
+                      decoration: const InputDecoration(
+                        hintText: "Answer",
+                      ),
+                      textAlign: TextAlign.center,
+                      textAlignVertical: TextAlignVertical.center,
+
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(1),
+                        FilteringTextInputFormatter.allow(
+                            RegExp("[0-9a-zA-Z]")),
+                      ],
+                      // The validator receives the text that the user has entered.
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                );
+              }),
+            );
+          },
         ),
       ),
     );
@@ -210,38 +234,38 @@ class _PromptAndAnswerTextFields extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _state.answerControllers[item],
-                              decoration:
-                                  const InputDecoration(hintText: "Answer"),
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(
-                                    (item == _state.gridSize - 1 ||
-                                            item == _state.gridSize * 2 - 1)
-                                        ? _state.gridSize - 1
-                                        : _state.gridSize)
-                              ],
-                              // The validator receives the text that the user has entered.
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
+                          // Expanded(
+                          //   child: TextFormField(
+                          //     controller: _state.answerControllers[item],
+                          //     decoration:
+                          //         const InputDecoration(hintText: "Answer"),
+                          //     inputFormatters: [
+                          //       LengthLimitingTextInputFormatter(
+                          //           (item == _state.gridSize - 1 ||
+                          //                   item == _state.gridSize * 2 - 1)
+                          //               ? _state.gridSize - 1
+                          //               : _state.gridSize)
+                          //     ],
+                          //     // The validator receives the text that the user has entered.
+                          //     validator: (value) {
+                          //       if (value == null || value.isEmpty) {
+                          //         return 'Please enter some text';
+                          //       }
 
-                                final bool _isLastAns =
-                                    (item == _state.gridSize - 1 ||
-                                        item == _state.gridSize * 2 - 1);
-                                if (_isLastAns &&
-                                    value.length == _state.gridSize - 1) {
-                                  return null;
-                                }
-                                if (value.length != _state.gridSize) {
-                                  return 'Please enter ${_state.gridSize} characters';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
+                          //       final bool _isLastAns =
+                          //           (item == _state.gridSize - 1 ||
+                          //               item == _state.gridSize * 2 - 1);
+                          //       if (_isLastAns &&
+                          //           value.length == _state.gridSize - 1) {
+                          //         return null;
+                          //       }
+                          //       if (value.length != _state.gridSize) {
+                          //         return 'Please enter ${_state.gridSize} characters';
+                          //       }
+                          //       return null;
+                          //     },
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -250,64 +274,6 @@ class _PromptAndAnswerTextFields extends StatelessWidget {
               ),
             )
             .toList(),
-      ),
-    );
-  }
-}
-
-class _PuzzleRenderer extends StatelessWidget {
-  final String acrossWords;
-  final String downWords;
-  final int gridSize;
-  const _PuzzleRenderer(
-      {Key? key,
-      required this.acrossWords,
-      required this.downWords,
-      required this.gridSize})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(16),
-        constraints: const BoxConstraints(maxWidth: 300),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: gridSize,
-              ),
-              itemCount: gridSize * gridSize,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == gridSize * gridSize - 1) {
-                  return Container();
-                }
-                final String _text = acrossWords[index] != " "
-                    ? acrossWords[index]
-                    : downWords[index];
-                return Card(
-                  color: Theme.of(context).colorScheme.secondary,
-                  child: Center(
-                    child: AutoSizeText(
-                      _text.toUpperCase(),
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).scaffoldBackgroundColor),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
       ),
     );
   }

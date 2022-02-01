@@ -5,6 +5,7 @@ import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
 import 'widgets/across_and_down_indexes.dart';
+import 'widgets/hints_and_info_row.dart';
 import 'widgets/prompt_selector.dart';
 import 'widgets/puzzle_widget.dart';
 import 'widgets/timer_and_moves.dart';
@@ -47,6 +48,37 @@ class PuzzlePagePresenter extends StatelessWidget {
                 ? Icons.pause_rounded
                 : Icons.play_arrow_rounded),
           ),
+          _puzzleState.puzzle is! CrosswordPuzzle
+              ? const SizedBox.shrink()
+              : PopupMenuButton<int>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    switch (value) {
+                      case 0:
+                        _puzzleState.showHints = !_puzzleState.showHints;
+                        break;
+                      default:
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(_puzzleState.showHints
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          const SizedBox(width: 8),
+                          Text(_puzzleState.showHints
+                              ? "Hide Hints"
+                              : "Show Hints")
+                        ],
+                      ),
+                    )
+                  ],
+                )
         ],
       ),
       body: SafeArea(
@@ -55,6 +87,7 @@ class PuzzlePagePresenter extends StatelessWidget {
           children: const [
             Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
+            HintsAndInfoRow(),
             PromptSelector(),
           ],
         ),
@@ -62,6 +95,7 @@ class PuzzlePagePresenter extends StatelessWidget {
           children: const [
             Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
+            HintsAndInfoRow(),
             PromptSelector(),
           ],
         ),
@@ -73,6 +107,7 @@ class PuzzlePagePresenter extends StatelessWidget {
                 child: Column(
                   children: const [
                     Expanded(child: _MainPuzzle()),
+                    HintsAndInfoRow(),
                     PromptSelector(),
                   ],
                 )),

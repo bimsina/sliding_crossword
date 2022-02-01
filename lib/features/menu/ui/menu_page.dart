@@ -48,18 +48,16 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const Expanded(
+          flex: 2,
+          child: Center(child: AppLogo()),
+        ),
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AppLogo(),
-              const SizedBox(height: 40),
-              _MenuItemsWidget(
-                onMenuItemTap: (item) {
-                  context.push('/puzzles-list', extra: item);
-                },
-              ),
-            ],
+          flex: 3,
+          child: _MenuItemsWidget(
+            onMenuItemTap: (item) {
+              context.push('/puzzles-list', extra: item);
+            },
           ),
         ),
         const _BottomRow(),
@@ -133,73 +131,55 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 250),
-        child: DefaultTabController(
-          length: 2,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TabBar(
-                  onTap: (int value) {
-                    setState(() {
-                      _isCrossWord = value == 0;
-                    });
-                  },
-                  tabs: const [
-                    Tab(text: "Crossword"),
-                    Tab(text: "Classic"),
-                  ]),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ListView.builder(
-                  itemCount: _menuItems.length,
-                  key: const Key('menu-items'),
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    final item = _menuItems[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(item.title, textAlign: TextAlign.center),
-                        subtitle: Text(
-                            "${item.difficulty.index + 3}x${item.difficulty.index + 3}",
-                            textAlign: TextAlign.center),
-                        onTap: () {
-                          if (_isCrossWord) {
-                            widget.onMenuItemTap(item);
-                          } else {
-                            context.push('/puzzle',
-                                extra: Puzzle(
-                                    gridSize: item.difficulty.index + 3));
-                          }
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              AnimatedScale(
-                scale: _isCrossWord ? 0 : 1,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOutQuad,
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Card(
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 250),
+      child: DefaultTabController(
+        length: 2,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TabBar(
+                onTap: (int value) {
+                  setState(() {
+                    _isCrossWord = value == 0;
+                  });
+                },
+                tabs: const [
+                  Tab(text: "Crossword"),
+                  Tab(text: "Classic"),
+                ]),
+            const SizedBox(height: 16),
+            Container(
+              constraints: const BoxConstraints(maxHeight: 300),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListView.builder(
+                itemCount: _menuItems.length,
+                key: const Key('menu-items'),
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  final item = _menuItems[index];
+                  return Card(
                     child: ListTile(
-                      title: const Text("Custom size",
+                      title: Text(item.title, textAlign: TextAlign.center),
+                      subtitle: Text(
+                          "${item.difficulty.index + 3}x${item.difficulty.index + 3}",
                           textAlign: TextAlign.center),
-                      subtitle: const Text("NxN", textAlign: TextAlign.center),
-                      onTap: () {},
+                      onTap: () {
+                        if (_isCrossWord) {
+                          widget.onMenuItemTap(item);
+                        } else {
+                          context.push('/puzzle',
+                              extra:
+                                  Puzzle(gridSize: item.difficulty.index + 3));
+                        }
+                      },
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

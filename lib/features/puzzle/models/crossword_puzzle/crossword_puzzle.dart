@@ -23,6 +23,10 @@ class CrosswordPuzzle extends Puzzle {
   @JsonKey(defaultValue: 0)
   final int timesPlayed;
 
+  final int? maxSecondsAvailable;
+
+  final int? maxMovesAvailable;
+
   CrosswordPuzzle({
     required this.title,
     required this.across,
@@ -32,6 +36,8 @@ class CrosswordPuzzle extends Puzzle {
     required this.authorId,
     required this.createdAt,
     this.timesPlayed = 0,
+    this.maxSecondsAvailable,
+    this.maxMovesAvailable,
   }) : super(gridSize: gridSize) {
     assert(gridSize > 0);
     assert(across.length == gridSize);

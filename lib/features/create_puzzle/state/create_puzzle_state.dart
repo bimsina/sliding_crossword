@@ -23,10 +23,10 @@ class CreatePuzzleState extends ChangeNotifier {
 
   final TextEditingController _puzzleNameController = TextEditingController();
   List<TextEditingController> _promptControllers = [];
-  List<TextEditingController> _answerControllers = [];
+  List<TextEditingController> _tileControllers = [];
 
   List<TextEditingController> get promptControllers => _promptControllers;
-  List<TextEditingController> get answerControllers => _answerControllers;
+  List<TextEditingController> get tileControllers => _tileControllers;
   TextEditingController get puzzleNameController => _puzzleNameController;
   final User _user;
 
@@ -37,18 +37,31 @@ class CreatePuzzleState extends ChangeNotifier {
   uploadPuzzle(BuildContext context) {
     final _promptList =
         _promptControllers.map((controller) => controller.text).toList();
-    final _answersList =
-        _answerControllers.map((controller) => controller.text).toList();
     final _downPrompt = _promptList.sublist(0, _gridSize);
-    final _downAnswers = _answersList.sublist(0, _gridSize);
     final _acrossPrompt = _promptList.sublist(_gridSize);
-    final _acrossAnswers = _answersList.sublist(_gridSize);
 
-    if (!_checkIfValid(_acrossAnswers.join(), _downAnswers.join())) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('The puzzle has some problems.')),
-      );
-      return;
+    List<String> _acrossAnswers = [];
+    List<String> _downAnswers = [];
+
+    for (int i = 0; i < _gridSize; i++) {
+      String _singleAcross = "";
+      String _singleDown = "";
+
+      for (int j = 0; j < _gridSize; j++) {
+        final _acrossIndex = j + (i * _gridSize);
+        final _acrossValue = _acrossIndex == _gridSize * _gridSize - 1
+            ? " "
+            : _tileControllers[_acrossIndex].text;
+        _singleAcross += _acrossValue;
+
+        final _downIndex = i + (j * _gridSize);
+        final _downvalue = _downIndex == _gridSize * _gridSize - 1
+            ? " "
+            : _tileControllers[_downIndex].text;
+        _singleDown += _downvalue;
+      }
+      _acrossAnswers.add(_singleAcross);
+      _downAnswers.add(_singleDown);
     }
 
     final List<Question> _acrossQuestions = _acrossPrompt
@@ -101,20 +114,6 @@ class CreatePuzzleState extends ChangeNotifier {
     });
   }
 
-  bool _checkIfValid(String acrossAnswers, String downAnswers) {
-    String _updatedDownAnswers = "";
-
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        _updatedDownAnswers += (i == gridSize - 1 && j == gridSize - 1)
-            ? ""
-            : downAnswers[j * gridSize + i];
-      }
-    }
-
-    return _updatedDownAnswers == acrossAnswers;
-  }
-
   @override
   void dispose() {
     _disposeControllers();
@@ -127,19 +126,20 @@ class CreatePuzzleState extends ChangeNotifier {
       _controller.dispose();
     }
 
-    for (final _controller in _answerControllers) {
+    for (final _controller in _tileControllers) {
       _controller.dispose();
     }
     _promptControllers = [];
   }
 
   _initializeControllers() {
+    _disposeControllers();
     _promptControllers = List.generate(
       2 * _gridSize,
       (index) => TextEditingController(),
     );
-    _answerControllers = List.generate(
-      2 * _gridSize,
+    _tileControllers = List.generate(
+      gridSize * _gridSize - 1,
       (index) => TextEditingController(),
     );
     notifyListeners();

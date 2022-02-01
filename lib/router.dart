@@ -6,6 +6,7 @@ import 'package:sliding_crossword/features/menu/models/menu_item.dart';
 import 'package:sliding_crossword/features/menu/ui/menu_page.dart';
 import 'package:sliding_crossword/features/page_not_found/page_not_found.dart';
 import 'package:sliding_crossword/features/profile/ui/profile_page.dart';
+import 'package:sliding_crossword/features/puzzle/ui/game_end_page.dart';
 import 'package:sliding_crossword/features/puzzle/ui/puzzle_page.dart';
 
 import 'features/puzzles_list/ui/puzzles_list_page.dart';
@@ -42,6 +43,17 @@ final router = GoRouter(
         if (state.extra is Puzzle) {
           final item = state.extra as Puzzle;
           return PuzzlePage(puzzle: item);
+        } else {
+          return const MenuPage();
+        }
+      },
+    ),
+    GoRoute(
+      path: '/game-end',
+      builder: (context, state) {
+        if (state.extra is GameEndPagePayload) {
+          final item = state.extra as GameEndPagePayload;
+          return GameEndPage(payload: item);
         } else {
           return const MenuPage();
         }

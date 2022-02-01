@@ -19,37 +19,14 @@ class PromptSelector extends StatelessWidget {
       ...(_puzzleState.puzzle as CrosswordPuzzle).across
     ];
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: () {
-            _puzzleState.showHints = !_puzzleState.showHints;
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(_puzzleState.showHints
-                    ? Icons.visibility_off
-                    : Icons.visibility),
-                const SizedBox(width: 8),
-                Text(_puzzleState.showHints ? "Hide Hints" : "Show Hints")
-              ],
-            ),
-          ),
-        ),
-        _PromptSelectorPresenter(
-          key: const Key('prompt-selector'),
-          prompts: _prompts,
-          controller: _puzzleState.promptController,
-          onPromptChanged: _puzzleState.jumpToPrompt,
-          onPageChanged: (page) {
-            _puzzleState.highlightedPrompt = page;
-          },
-        ),
-      ],
+    return _PromptSelectorPresenter(
+      key: const Key('prompt-selector'),
+      prompts: _prompts,
+      controller: _puzzleState.promptController,
+      onPromptChanged: _puzzleState.jumpToPrompt,
+      onPageChanged: (page) {
+        _puzzleState.highlightedPrompt = page;
+      },
     );
   }
 }

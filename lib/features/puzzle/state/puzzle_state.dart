@@ -3,9 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/features/puzzle/models/grid.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/features/puzzle/models/tile.dart';
+import 'package:sliding_crossword/features/puzzle/ui/game_end_page.dart';
 
 enum PuzzlePageState { playing, paused }
 
@@ -95,6 +97,15 @@ class PuzzleState extends ChangeNotifier {
   _initTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _timeElapsed += const Duration(seconds: 1);
+      if (_puzzle is CrosswordPuzzle) {
+        final _maxSeconds = (_puzzle as CrosswordPuzzle).maxSecondsAvailable;
+        if (_maxSeconds != null) {
+          if (_timeElapsed.inSeconds >= _maxSeconds) {
+            _showGameEndDialog(
+                GameEndPagePayload(this, GameEndPageState.lossViaTimeout));
+          }
+        }
+      }
       notifyListeners();
     });
   }
@@ -132,9 +143,8 @@ class PuzzleState extends ChangeNotifier {
       final _sampleList = List.generate(_sampleString.length, (index) => index);
       _tiles = _sampleList
           .map((index) => Tile(
-              value: _sampleString.split('')[index] == " "
-                  ? null
-                  : _sampleString.split('')[index],
+              canInteract: true,
+              value: _sampleString[index] == " " ? null : _sampleString[index],
               id: index.toString()))
           .toList();
     } else {
@@ -144,6 +154,7 @@ class PuzzleState extends ChangeNotifier {
           (index) => Tile(
                 value: index == _length - 1 ? null : '${index + 1}',
                 id: index.toString(),
+                canInteract: true,
               ));
 
       List<String> _initialAcrossWords = [];
@@ -249,26 +260,20 @@ class PuzzleState extends ChangeNotifier {
 
     if (_correctColumns.length == _gridSize &&
         _correctRows.length == _gridSize) {
-      pauseTimer();
-      showDialog(
-          context: _context,
-          builder: (_) => AlertDialog(
-                title: const Text("You win!"),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text("OK"),
-                    onPressed: () {
-                      Navigator.of(_context).pop();
-                      Navigator.of(_context).pop();
-                    },
-                  )
-                ],
-              ));
+      _showGameEndDialog(GameEndPagePayload(this, GameEndPageState.won));
     }
     notifyListeners();
   }
 
+  _showGameEndDialog(GameEndPagePayload payload) {
+    pauseTimer();
+    GoRouter.of(_context).pop();
+    GoRouter.of(_context).push('/game-end', extra: payload);
+  }
+
   void moveTile(int index, {bool notify = true}) {
+    if (!_tiles[index].canInteract) return;
+
     final _grid = grids[index];
     final _isAdjacent = adjacentGrids.contains(_grid);
 
@@ -297,6 +302,9 @@ class PuzzleState extends ChangeNotifier {
         }
       }
       _tilesToMove = _tilesToMove.reversed.toList();
+      if (_tilesToMove.indexWhere((element) => element.canInteract != true) !=
+          -1) return;
+
       for (final tile in _tilesToMove) {
         final _isLast = _tilesToMove.indexOf(tile) == _tilesToMove.length - 1;
         _moveAdjacent(_tiles.indexOf(tile), notify, increaseMoves: _isLast);
@@ -308,10 +316,20 @@ class PuzzleState extends ChangeNotifier {
   }
 
   void _moveAdjacent(int index, bool notify, {bool increaseMoves = true}) {
+    if (!_tiles[index].canInteract) return;
     _tiles.swap(_tiles.indexOf(_emptyTile), index);
     _findAdjacentTiles(notify: notify);
     if (notify) {
       if (increaseMoves) _moves += 1;
+      if (_puzzle is CrosswordPuzzle) {
+        final _maxMoves = (_puzzle as CrosswordPuzzle).maxMovesAvailable;
+        if (_maxMoves != null) {
+          if (_moves >= _maxMoves) {
+            _showGameEndDialog(
+                GameEndPagePayload(this, GameEndPageState.lossViaNoMoreMoves));
+          }
+        }
+      }
       notifyListeners();
     }
   }
