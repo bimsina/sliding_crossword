@@ -17,10 +17,7 @@ class PuzzlesListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PuzzleListState>(
-      create: (context) => PuzzleListState(filter),
-      child: const _PuzzlesListPagePresenter(),
-    );
+    return const _PuzzlesListPagePresenter();
   }
 }
 
@@ -46,7 +43,7 @@ class _PuzzlesListPagePresenterState extends State<_PuzzlesListPagePresenter> {
               showDialog(
                 context: context,
                 builder: (context) => _FilterDialog(
-                  filter: _state.filter,
+                  filter: _state.filter ?? const PuzzlesListFilter(),
                   onFilterChanged: (filter) {
                     _state.filter = filter;
                   },
@@ -177,11 +174,8 @@ class __FilterDialogState extends State<_FilterDialog> {
             selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
-                _filter = PuzzlesListFilter(
-                  difficulty: PuzzleDifficulty.values[index],
-                  sortDirection: _filter.sortDirection,
-                  sortOrder: _filter.sortOrder,
-                );
+                _filter = _filter.copyWith(
+                    difficulty: PuzzleDifficulty.values[index]);
               });
             },
             children: PuzzleDifficulty.values
@@ -214,11 +208,7 @@ class __FilterDialogState extends State<_FilterDialog> {
             selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
-                _filter = PuzzlesListFilter(
-                  difficulty: _filter.difficulty,
-                  sortDirection: _filter.sortDirection,
-                  sortOrder: SortOrder.values[index],
-                );
+                _filter = _filter.copyWith(sortOrder: SortOrder.values[index]);
               });
             },
             children: SortOrder.values
@@ -251,11 +241,8 @@ class __FilterDialogState extends State<_FilterDialog> {
             selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
-                _filter = PuzzlesListFilter(
-                  difficulty: _filter.difficulty,
-                  sortOrder: _filter.sortOrder,
-                  sortDirection: SortDirection.values[index],
-                );
+                _filter = _filter.copyWith(
+                    sortDirection: SortDirection.values[index]);
               });
             },
             children: SortDirection.values

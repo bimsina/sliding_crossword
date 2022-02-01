@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/theme/ui/app_logo.dart';
 import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/features/create_puzzle/ui/create_puzzle_button.dart';
 import 'package:sliding_crossword/features/menu/models/menu_item.dart';
+import 'package:sliding_crossword/features/puzzles_list/state/puzzles_list_state.dart';
 import 'package:sliding_crossword/features/puzzles_list/ui/puzzles_list_page.dart';
 import 'package:sliding_crossword/features/profile/ui/profile_icon.dart';
 import 'package:go_router/go_router.dart';
@@ -56,6 +58,11 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
           flex: 3,
           child: _MenuItemsWidget(
             onMenuItemTap: (item) {
+              Provider.of<PuzzleListState>(context, listen: false).filter =
+                  (Provider.of<PuzzleListState>(context, listen: false)
+                              .filter ??
+                          const PuzzlesListFilter())
+                      .copyWith(difficulty: item.difficulty);
               context.push('/puzzles-list', extra: item);
             },
           ),
@@ -179,6 +186,23 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                 },
               ),
             ),
+            AnimatedScale(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInToLinear,
+              scale: _isCrossWord ? 0 : 1,
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Card(
+                  child: ListTile(
+                    title:
+                        const Text("Custom Size", textAlign: TextAlign.center),
+                    subtitle: const Text("NxN", textAlign: TextAlign.center),
+                    onTap: () {},
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

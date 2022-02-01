@@ -22,12 +22,18 @@ class CreatePuzzleState extends ChangeNotifier {
   }
 
   final TextEditingController _puzzleNameController = TextEditingController();
+  final TextEditingController _maxSecondsController = TextEditingController();
+  final TextEditingController _maxMovesController = TextEditingController();
+
   List<TextEditingController> _promptControllers = [];
   List<TextEditingController> _tileControllers = [];
 
   List<TextEditingController> get promptControllers => _promptControllers;
   List<TextEditingController> get tileControllers => _tileControllers;
   TextEditingController get puzzleNameController => _puzzleNameController;
+  TextEditingController get maxSecondsController => _maxSecondsController;
+  TextEditingController get maxMovesController => _maxMovesController;
+
   final User _user;
 
   CreatePuzzleState(this._user) {
@@ -90,14 +96,20 @@ class CreatePuzzleState extends ChangeNotifier {
 
     final _doc = _puzzleCollection.doc();
 
+    final _maxMoves = int.tryParse(_maxMovesController.text);
+    final _maxSeconds = int.tryParse(_maxSecondsController.text);
+
     final CrosswordPuzzle _puzzle = CrosswordPuzzle(
-        title: _puzzleNameController.text,
-        across: _acrossQuestions,
-        down: _downQuestions,
-        gridSize: gridSize,
-        id: _doc.id,
-        authorId: _user.uid,
-        createdAt: DateTime.now());
+      title: _puzzleNameController.text,
+      across: _acrossQuestions,
+      down: _downQuestions,
+      gridSize: gridSize,
+      id: _doc.id,
+      authorId: _user.uid,
+      createdAt: DateTime.now(),
+      maxMovesAvailable: _maxMoves,
+      maxSecondsAvailable: _maxSeconds,
+    );
 
     DialogUtils.showCustomLoadingDialog(context);
 
@@ -118,6 +130,8 @@ class CreatePuzzleState extends ChangeNotifier {
   void dispose() {
     _disposeControllers();
     _puzzleNameController.dispose();
+    _maxSecondsController.dispose();
+    _maxMovesController.dispose();
     super.dispose();
   }
 

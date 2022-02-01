@@ -16,7 +16,7 @@ class TimerAndMoves extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.timer, size: 30),
+            const Icon(Icons.hourglass_bottom, size: 30),
             const SizedBox(width: 8),
             if (_puzzleState.puzzle is CrosswordPuzzle)
               const _TotalDuration()

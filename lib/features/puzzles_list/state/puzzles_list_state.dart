@@ -17,29 +17,39 @@ class PuzzleListState extends ChangeNotifier {
     notifyListeners();
   }
 
-  PuzzlesListFilter _filter = PuzzlesListFilter();
-  PuzzlesListFilter get filter => _filter;
-  set filter(PuzzlesListFilter newFilter) {
-    _filter = newFilter;
-    fetchPuzzles();
+  PuzzlesListFilter? _filter;
+  PuzzlesListFilter? get filter => _filter;
+  set filter(PuzzlesListFilter? newFilter) {
+    if (newFilter != _filter) {
+      _filter = newFilter;
+      fetchPuzzles();
+    }
   }
 
-  PuzzleListState(this._filter) {
-    fetchPuzzles();
-  }
+  final Map<String, List<CrosswordPuzzle>> _puzzlesCache = {};
 
   fetchPuzzles({bool clearPuzzles = true}) {
+    if (_filter == null) return;
     state = DataFetchState.loading;
     if (clearPuzzles) {
       _puzzles.clear();
     }
 
+    if (_puzzlesCache.keys.contains(_filter.toString())) {
+      _puzzles.clear();
+      _puzzles.addAll(_puzzlesCache[_filter.toString()] ?? []);
+      state = DataFetchState.loaded;
+      return;
+    }
+
     final _puzzlesCollection = FirebaseFirestore.instance
         .collection('puzzles_under_review')
-        .where("grid_size", isEqualTo: _filter.difficulty.index + 3)
+        .where("grid_size", isEqualTo: _filter!.difficulty.index + 3)
         .orderBy(
-            _filter.sortOrder == SortOrder.date ? 'created_at' : 'times_played',
-            descending: _filter.sortDirection == SortDirection.descending)
+            _filter!.sortOrder == SortOrder.date
+                ? 'created_at'
+                : 'times_played',
+            descending: _filter!.sortDirection == SortDirection.descending)
         .withConverter<CrosswordPuzzle>(
             fromFirestore: (snapshot, options) =>
                 CrosswordPuzzle.fromJson(snapshot.data()!),
@@ -49,6 +59,9 @@ class PuzzleListState extends ChangeNotifier {
       _puzzles.addAll(snapshot.docs.map((DocumentSnapshot doc) {
         return doc.data() as CrosswordPuzzle;
       }).toList());
+
+      _puzzlesCache[_filter.toString()] = [..._puzzles];
+
       state = DataFetchState.loaded;
     }).catchError((error) {
       state = DataFetchState.error;

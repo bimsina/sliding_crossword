@@ -46,7 +46,7 @@ class PuzzleWidget extends StatelessWidget {
 
         return AnimatedPositioned(
           duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOutCubicEmphasized,
+          curve: Curves.easeInOutBack,
           left: _grid.x * tileSize,
           top: _grid.y * tileSize,
           key: Key(tile.id),
@@ -98,32 +98,32 @@ class _PuzzleTile extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0)),
               color: tileColor ?? (!tile.canInteract ? Colors.black : null),
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(8.0),
-                child: GestureDetector(
-                  onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
-                          swipeDirection == SwipeDirection.right)
-                      ? (details) {
-                          if ((details.velocity.pixelsPerSecond.dx > 10 &&
-                                  swipeDirection == SwipeDirection.right) ||
-                              (details.velocity.pixelsPerSecond.dx < 10 &&
-                                  swipeDirection == SwipeDirection.left)) {
-                            onTap?.call();
-                          }
+              child: GestureDetector(
+                onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
+                        swipeDirection == SwipeDirection.right)
+                    ? (details) {
+                        if ((details.velocity.pixelsPerSecond.dx > 1 &&
+                                swipeDirection == SwipeDirection.right) ||
+                            (details.velocity.pixelsPerSecond.dx < 1 &&
+                                swipeDirection == SwipeDirection.left)) {
+                          onTap?.call();
                         }
-                      : null,
-                  onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
-                          swipeDirection == SwipeDirection.up)
-                      ? (details) {
-                          if ((details.velocity.pixelsPerSecond.dy > 10 &&
-                                  swipeDirection == SwipeDirection.down) ||
-                              (details.velocity.pixelsPerSecond.dy < 10 &&
-                                  swipeDirection == SwipeDirection.up)) {
-                            onTap?.call();
-                          }
+                      }
+                    : null,
+                onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
+                        swipeDirection == SwipeDirection.up)
+                    ? (details) {
+                        if ((details.velocity.pixelsPerSecond.dy > 1 &&
+                                swipeDirection == SwipeDirection.down) ||
+                            (details.velocity.pixelsPerSecond.dy < 1 &&
+                                swipeDirection == SwipeDirection.up)) {
+                          onTap?.call();
                         }
-                      : null,
+                      }
+                    : null,
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(8.0),
                   child: !tile.canInteract
                       ? const SizedBox.shrink()
                       : Stack(

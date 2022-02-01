@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/user_state.dart';
 import 'package:sliding_crossword/core/theme/state/theme_notifier.dart';
+import 'features/puzzles_list/state/puzzles_list_state.dart';
 import 'router.dart';
 import 'firebase_options.dart';
 
@@ -19,7 +20,8 @@ void main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserState()),
-    ChangeNotifierProvider(create: (_) => ThemeNotifier())
+    ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+    ChangeNotifierProvider(create: (_) => PuzzleListState()),
   ], child: const MyApp()));
 }
 
