@@ -56,6 +56,7 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
                     child: const Padding(
                       padding: EdgeInsets.only(top: 8.0),
                       child: TabBarView(
+                        physics: BouncingScrollPhysics(),
                         children: [
                           _PuzzleInfo(),
                           _PromptAndAnswerTextFields(isAcross: false),
@@ -102,81 +103,71 @@ class _PuzzleInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _state = Provider.of<CreatePuzzleState>(context);
-    return Column(
-      children: [
-        Card(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Grid Size : "),
-              DropdownButton<int>(
-                underline: Container(),
-                value: _state.gridSize,
-                items: PuzzleDifficulty.values.map((PuzzleDifficulty value) {
-                  return DropdownMenuItem<int>(
-                    value: value.index + 3,
-                    child: Text(
-                        "${value.index + 3}x${value.index + 3} : ${value.name}",
-                        textAlign: TextAlign.center),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) {
-                    _state.gridSize = val;
-                  }
-                },
-              ),
-            ],
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Card(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Grid Size : "),
+                DropdownButton<int>(
+                  underline: Container(),
+                  value: _state.gridSize,
+                  items: PuzzleDifficulty.values.map((PuzzleDifficulty value) {
+                    return DropdownMenuItem<int>(
+                      value: value.index + 3,
+                      child: Text(
+                          "${value.index + 3}x${value.index + 3} : ${value.name}",
+                          textAlign: TextAlign.center),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      _state.gridSize = val;
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-        Card(
-          child: TextFormField(
-            controller: _state.puzzleNameController,
-            decoration: const InputDecoration(hintText: "Enter Puzzle Name"),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
+          Card(
+            child: TextFormField(
+              controller: _state.puzzleNameController,
+              decoration: const InputDecoration(hintText: "Enter Puzzle Name"),
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
 
-              return null;
-            },
+                return null;
+              },
+            ),
           ),
-        ),
-        Card(
-          child: TextFormField(
-            controller: _state.maxSecondsController,
-            decoration:
-                const InputDecoration(hintText: "Max Seconds (optional)"),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-            ],
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-
-              return null;
-            },
+          Card(
+            child: TextFormField(
+              controller: _state.maxSecondsController,
+              decoration:
+                  const InputDecoration(hintText: "Max Seconds (optional)"),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              ],
+            ),
           ),
-        ),
-        Card(
-          child: TextFormField(
-            controller: _state.maxMovesController,
-            decoration: const InputDecoration(hintText: "Max Moves (optional)"),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-            ],
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-
-              return null;
-            },
+          Card(
+            child: TextFormField(
+              controller: _state.maxMovesController,
+              decoration:
+                  const InputDecoration(hintText: "Max Moves (optional)"),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -239,6 +230,7 @@ class _PromptAndAnswerTextFields extends StatelessWidget {
   Widget build(BuildContext context) {
     final _state = Provider.of<CreatePuzzleState>(context);
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Column(
         children: List.generate(_state.gridSize,
                 (index) => isAcross ? index + _state.gridSize : index)
@@ -253,61 +245,24 @@ class _PromptAndAnswerTextFields extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
-                            "${(isAcross ? item - _state.gridSize : item) + 1} ${isAcross ? "Across" : "Down"} "),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: TextFormField(
-                              controller: _state.promptControllers[item],
-                              decoration: const InputDecoration(
-                                  hintText: "Enter prompt"),
-                              // The validator receives the text that the user has entered.
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
-                            ),
+                          "${(isAcross ? item - _state.gridSize : item) + 1} ${isAcross ? "Across" : "Down"}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 10),
-                          // Expanded(
-                          //   child: TextFormField(
-                          //     controller: _state.answerControllers[item],
-                          //     decoration:
-                          //         const InputDecoration(hintText: "Answer"),
-                          //     inputFormatters: [
-                          //       LengthLimitingTextInputFormatter(
-                          //           (item == _state.gridSize - 1 ||
-                          //                   item == _state.gridSize * 2 - 1)
-                          //               ? _state.gridSize - 1
-                          //               : _state.gridSize)
-                          //     ],
-                          //     // The validator receives the text that the user has entered.
-                          //     validator: (value) {
-                          //       if (value == null || value.isEmpty) {
-                          //         return 'Please enter some text';
-                          //       }
-
-                          //       final bool _isLastAns =
-                          //           (item == _state.gridSize - 1 ||
-                          //               item == _state.gridSize * 2 - 1);
-                          //       if (_isLastAns &&
-                          //           value.length == _state.gridSize - 1) {
-                          //         return null;
-                          //       }
-                          //       if (value.length != _state.gridSize) {
-                          //         return 'Please enter ${_state.gridSize} characters';
-                          //       }
-                          //       return null;
-                          //     },
-                          //   ),
-                          // ),
-                        ],
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _state.promptControllers[item],
+                        decoration:
+                            const InputDecoration(hintText: "Enter prompt"),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),

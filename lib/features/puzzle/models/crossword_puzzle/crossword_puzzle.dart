@@ -38,11 +38,7 @@ class CrosswordPuzzle extends Puzzle {
     this.timesPlayed = 0,
     this.maxSecondsAvailable,
     this.maxMovesAvailable,
-  }) : super(gridSize: gridSize) {
-    assert(gridSize > 0);
-    assert(across.length == gridSize);
-    assert(down.length == gridSize);
-  }
+  }) : super(gridSize: gridSize);
 
   factory CrosswordPuzzle.fromJson(Map<String, dynamic> json) =>
       _$CrosswordPuzzleFromJson(json);

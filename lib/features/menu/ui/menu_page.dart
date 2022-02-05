@@ -55,7 +55,7 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
           child: Center(child: AppLogo()),
         ),
         Expanded(
-          flex: 3,
+          flex: 4,
           child: _MenuItemsWidget(
             onMenuItemTap: (item) {
               Provider.of<PuzzleListState>(context, listen: false).filter =

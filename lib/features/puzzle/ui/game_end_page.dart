@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/core/utils/date_utils.dart';
@@ -31,6 +32,8 @@ class GameEndPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (payload.gameEndPageState == GameEndPageState.won)
+                const _Confetti(),
               Text(
                   payload.gameEndPageState == GameEndPageState.won
                       ? "You Won!"
@@ -131,6 +134,45 @@ class _Moves extends StatelessWidget {
                 fontSize: 24,
                 color: Theme.of(context).scaffoldBackgroundColor,
                 fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+}
+
+class _Confetti extends StatefulWidget {
+  const _Confetti({Key? key}) : super(key: key);
+
+  @override
+  State<_Confetti> createState() => _ConfettiState();
+}
+
+class _ConfettiState extends State<_Confetti> {
+  late ConfettiController _leftController;
+  late ConfettiController _rightController;
+  @override
+  void initState() {
+    super.initState();
+    _leftController = ConfettiController(duration: const Duration(seconds: 5));
+    _rightController = ConfettiController(duration: const Duration(seconds: 5));
+    Future.delayed(Duration.zero, () {
+      _rightController.play();
+      _leftController.play();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ConfettiWidget(
+          confettiController: _leftController,
+          blastDirection: 100,
+        ),
+        ConfettiWidget(
+          confettiController: _rightController,
+          blastDirection: 10,
+        ),
       ],
     );
   }

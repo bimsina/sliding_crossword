@@ -228,7 +228,7 @@ class PuzzleState extends ChangeNotifier {
     }
   }
 
-  _findCorrectWordsBuilt() {
+  _findCorrectWordsBuilt() async {
     _correctColumns.clear();
     _correctRows.clear();
 
@@ -260,6 +260,7 @@ class PuzzleState extends ChangeNotifier {
 
     if (_correctColumns.length == _gridSize &&
         _correctRows.length == _gridSize) {
+      await Future.delayed(const Duration(milliseconds: 300));
       _showGameEndDialog(GameEndPagePayload(this, GameEndPageState.won));
     }
     notifyListeners();
