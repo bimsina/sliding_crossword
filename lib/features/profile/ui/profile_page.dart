@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/state/user_state.dart';
 import 'package:sliding_crossword/features/login/ui/login_page.dart';
@@ -32,6 +33,13 @@ class _ProfilePagePresenter extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           actions: [
+            if (_userState.isAdmin)
+              IconButton(
+                icon: const Icon(Icons.admin_panel_settings),
+                onPressed: () {
+                  GoRouter.of(context).push('/admin');
+                },
+              ),
             IconButton(
                 onPressed: _userState.signOut,
                 icon: const Icon(Icons.exit_to_app)),

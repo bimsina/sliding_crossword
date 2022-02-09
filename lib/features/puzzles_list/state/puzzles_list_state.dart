@@ -43,7 +43,7 @@ class PuzzleListState extends ChangeNotifier {
     }
 
     final _puzzlesCollection = FirebaseFirestore.instance
-        .collection('puzzles_under_review')
+        .collection('puzzles')
         .where("grid_size", isEqualTo: _filter!.difficulty.index + 3)
         .orderBy(
             _filter!.sortOrder == SortOrder.date

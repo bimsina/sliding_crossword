@@ -22,14 +22,24 @@ class UserState extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isAdmin = false;
+  bool get isAdmin => _isAdmin;
+  set isAdmin(bool value) {
+    _isAdmin = value;
+    notifyListeners();
+  }
+
   UserState() {
     _auth.authStateChanges().listen(_authStateListener);
   }
 
-  void _authStateListener(User? user) {
-    if (user == null) {
+  void _authStateListener(User? listenedUser) {
+    if (listenedUser == null) {
+      _isAdmin == false;
       status = AuthStatus.loggedOut;
     } else {
+      _user = listenedUser;
+      _fetchIfAdmin();
       status = AuthStatus.loggedIn;
     }
   }
@@ -86,5 +96,20 @@ class UserState extends ChangeNotifier {
   _showErrorMessage(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Oops! Something went wrong.")));
+  }
+
+  _fetchIfAdmin() {
+    // if (_user == null) return;
+    // final _usersDocument =
+    //     FirebaseFirestore.instance.collection('users').doc(_user!.uid);
+
+    // _usersDocument.get().then((value) {
+    //   if (value.exists) {
+    //     isAdmin = value.data()?['is_admin'] ?? false;
+    //   }
+    // });
+    if (_user?.uid == "YJRNkpUnKJaz2bqhTnoynUr3fO53") {
+      isAdmin = true;
+    }
   }
 }

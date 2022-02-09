@@ -6,14 +6,16 @@ import 'package:sliding_crossword/features/dialogs/utils/dialog_utils.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 
 class CreatePuzzleState extends ChangeNotifier {
-  final _puzzleCollection = FirebaseFirestore.instance
-      .collection('puzzles_under_review')
-      .withConverter<CrosswordPuzzle>(
-          fromFirestore: (snapshot, options) =>
-              CrosswordPuzzle.fromJson(snapshot.data()!),
-          toFirestore: (puzzle, options) => puzzle.toJson());
+  final CollectionReference<CrosswordPuzzle> _puzzleCollection =
+      FirebaseFirestore.instance
+          .collection('puzzles_under_review')
+          .withConverter<CrosswordPuzzle>(
+              fromFirestore: (snapshot, options) =>
+                  CrosswordPuzzle.fromJson(snapshot.data()!),
+              toFirestore: (puzzle, options) => puzzle.toJson());
 
   final formKey = GlobalKey<FormState>();
+
   int _gridSize = 3;
   int get gridSize => _gridSize;
   set gridSize(int value) {
@@ -75,6 +77,7 @@ class CreatePuzzleState extends ChangeNotifier {
         .map((index, prompt) => MapEntry(
               index,
               Question(
+                id: "across_$index",
                 prompt: prompt,
                 answer: _acrossAnswers[index],
               ),
@@ -87,6 +90,7 @@ class CreatePuzzleState extends ChangeNotifier {
         .map((index, prompt) => MapEntry(
               index,
               Question(
+                id: "down_$index",
                 prompt: prompt,
                 answer: _downAnswers[index],
               ),

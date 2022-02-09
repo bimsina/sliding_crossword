@@ -1,6 +1,7 @@
 library router;
 
 import 'package:go_router/go_router.dart';
+import 'package:sliding_crossword/features/admin/admin_page.dart';
 import 'package:sliding_crossword/features/create_puzzle/ui/create_puzzle_page.dart';
 import 'package:sliding_crossword/features/menu/models/menu_item.dart';
 import 'package:sliding_crossword/features/menu/ui/menu_page.dart';
@@ -62,6 +63,10 @@ final router = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfilePage(),
+    ),
+    GoRoute(
+      path: '/admin',
+      builder: (context, state) => const AdminPage(),
     ),
   ],
 );

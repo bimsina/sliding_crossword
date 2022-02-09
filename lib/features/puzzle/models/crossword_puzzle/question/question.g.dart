@@ -7,11 +7,13 @@ part of 'question.dart';
 // **************************************************************************
 
 Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
+      id: json['id'] as String,
       prompt: json['prompt'] as String,
       answer: json['answer'] as String,
     );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
+      'id': instance.id,
       'prompt': instance.prompt,
       'answer': instance.answer,
     };

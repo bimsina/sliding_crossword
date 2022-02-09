@@ -14,18 +14,13 @@ class PromptSelector extends StatelessWidget {
       return const SizedBox();
     }
 
-    final _prompts = [
-      ...(_puzzleState.puzzle as CrosswordPuzzle).down,
-      ...(_puzzleState.puzzle as CrosswordPuzzle).across
-    ];
-
     return _PromptSelectorPresenter(
       key: const Key('prompt-selector'),
-      prompts: _prompts,
+      prompts: _puzzleState.availablePrompts,
       controller: _puzzleState.promptController,
       onPromptChanged: _puzzleState.jumpToPrompt,
       onPageChanged: (page) {
-        _puzzleState.highlightedPrompt = page;
+        _puzzleState.changePrompt(page);
       },
     );
   }
@@ -47,6 +42,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _puzzleState = Provider.of<PuzzleState>(context);
     return Container(
       height: 100,
       constraints: const BoxConstraints(maxWidth: 500),
@@ -71,8 +67,30 @@ class _PromptSelectorPresenter extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   controller: controller,
                   itemCount: prompts.length,
-                  onPageChanged: onPageChanged,
+                  onPageChanged: (val) {
+                    onPageChanged(val);
+                  },
                   itemBuilder: (context, index) {
+                    String _subtitle = "";
+
+                    final _inAcrossIndex =
+                        (_puzzleState.puzzle as CrosswordPuzzle)
+                            .across
+                            .indexWhere((element) =>
+                                element.id == _puzzleState.selectedPrompt?.id);
+
+                    final _inDownIndex =
+                        (_puzzleState.puzzle as CrosswordPuzzle)
+                            .down
+                            .indexWhere((element) =>
+                                element.id == _puzzleState.selectedPrompt?.id);
+
+                    if (_inAcrossIndex != -1) {
+                      _subtitle = "${_inAcrossIndex + 1} Across";
+                    } else if (_inDownIndex != -1) {
+                      _subtitle = "${_inDownIndex + 1} Down";
+                    }
+
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -81,12 +99,11 @@ class _PromptSelectorPresenter extends StatelessWidget {
                           style: const TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          index < prompts.length / 2
-                              ? "${index + 1} Down"
-                              : "${index + 1 - prompts.length ~/ 2} Across",
-                          style: Theme.of(context).textTheme.subtitle2,
-                        ),
+                        if (_subtitle != "")
+                          Text(
+                            _subtitle,
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
                       ],
                     );
                   }),

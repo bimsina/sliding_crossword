@@ -42,10 +42,23 @@ class PuzzleState extends ChangeNotifier {
   final Puzzle _puzzle;
   Puzzle get puzzle => _puzzle;
 
-  int _highlightedPrompt = 0;
-  int get highlightedPrompt => _highlightedPrompt;
+  List<Question> _availablePrompts = [];
+  List<Question> get availablePrompts => _availablePrompts;
+
   final PageController _promptController = PageController();
   PageController get promptController => _promptController;
+
+  Question? _selectedPrompt;
+  Question? get selectedPrompt => _selectedPrompt;
+  set selectedPrompt(Question? value) {
+    _selectedPrompt = value;
+    notifyListeners();
+  }
+
+  changePrompt(int index) {
+    _selectedPrompt = _availablePrompts[index];
+    notifyListeners();
+  }
 
   PuzzlePageState _state = PuzzlePageState.playing;
   PuzzlePageState get state => _state;
@@ -57,11 +70,6 @@ class PuzzleState extends ChangeNotifier {
     } else {
       pauseTimer();
     }
-    notifyListeners();
-  }
-
-  set highlightedPrompt(int value) {
-    _highlightedPrompt = value;
     notifyListeners();
   }
 
@@ -91,6 +99,7 @@ class PuzzleState extends ChangeNotifier {
   @override
   void dispose() {
     _timer.cancel();
+    _promptController.dispose();
     super.dispose();
   }
 
@@ -127,15 +136,14 @@ class PuzzleState extends ChangeNotifier {
             ));
 
     if (_puzzle is CrosswordPuzzle) {
-      _acrossWords = (_puzzle as CrosswordPuzzle)
-          .across
-          .map((word) => word.answer.toLowerCase())
+      final _crossword = _puzzle as CrosswordPuzzle;
+      _acrossWords = _crossword.across
+          .map((word) => word.answer.trim().toLowerCase())
           .toList();
       _acrossWords[_acrossWords.length - 1] = _acrossWords.last + " ";
 
-      _downWords = (_puzzle as CrosswordPuzzle)
-          .down
-          .map((word) => word.answer.toLowerCase())
+      _downWords = _crossword.down
+          .map((word) => word.answer.trim().toLowerCase())
           .toList();
       _downWords[_downWords.length - 1] = _downWords.last + " ";
 
@@ -147,6 +155,12 @@ class PuzzleState extends ChangeNotifier {
               value: _sampleString[index] == " " ? null : _sampleString[index],
               id: index.toString()))
           .toList();
+      _availablePrompts = [..._crossword.across, ..._crossword.down]
+          .where((element) => element.prompt != '-')
+          .toList();
+      if (_availablePrompts.isNotEmpty) {
+        _selectedPrompt = _availablePrompts.first;
+      }
     } else {
       final _length = _gridSize * _gridSize;
       _tiles = List.generate(
