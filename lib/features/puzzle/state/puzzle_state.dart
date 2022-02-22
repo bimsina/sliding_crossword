@@ -135,24 +135,39 @@ class PuzzleState extends ChangeNotifier {
               y: _getRow(index),
             ));
 
+    final _length = _gridSize * _gridSize;
+
     if (_puzzle is CrosswordPuzzle) {
       final _crossword = _puzzle as CrosswordPuzzle;
-      _acrossWords = _crossword.across
-          .map((word) => word.answer.trim().toLowerCase())
-          .toList();
-      _acrossWords[_acrossWords.length - 1] = _acrossWords.last + " ";
 
-      _downWords = _crossword.down
-          .map((word) => word.answer.trim().toLowerCase())
-          .toList();
-      _downWords[_downWords.length - 1] = _downWords.last + " ";
+      List<String> _initialAcrossWords = [];
+      List<String> _initialDownWords = [];
 
-      final _sampleString = _acrossWords.join('');
-      final _sampleList = List.generate(_sampleString.length, (index) => index);
-      _tiles = _sampleList
+      for (int i = 0; i < _gridSize; i++) {
+        String _singleAcross = "";
+        String _singleDown = "";
+
+        for (int j = 0; j < _gridSize; j++) {
+          final _acrossValue = (j + 1) + (i * _gridSize);
+          _singleAcross += _acrossValue == _gridSize * _gridSize
+              ? " "
+              : _crossword.tiles[_acrossValue - 1];
+          final _downvalue = (i + 1) + (j * _gridSize);
+          _singleDown += _downvalue == _gridSize * _gridSize
+              ? " "
+              : _crossword.tiles[_downvalue - 1];
+        }
+        _initialAcrossWords.add(_singleAcross);
+        _initialDownWords.add(_singleDown);
+      }
+
+      _acrossWords = _initialAcrossWords;
+      _downWords = _initialDownWords;
+
+      _tiles = List.generate(_length, (index) => index)
           .map((index) => Tile(
               canInteract: true,
-              value: _sampleString[index] == " " ? null : _sampleString[index],
+              value: index == _length - 1 ? null : _crossword.tiles[index],
               id: index.toString()))
           .toList();
       _availablePrompts = [..._crossword.across, ..._crossword.down]
@@ -162,7 +177,6 @@ class PuzzleState extends ChangeNotifier {
         _selectedPrompt = _availablePrompts.first;
       }
     } else {
-      final _length = _gridSize * _gridSize;
       _tiles = List.generate(
           _length,
           (index) => Tile(

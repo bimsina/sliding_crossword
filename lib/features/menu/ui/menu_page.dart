@@ -58,12 +58,7 @@ class _MobileAndTabletMenuBuilder extends StatelessWidget {
           flex: 4,
           child: _MenuItemsWidget(
             onMenuItemTap: (item) {
-              Provider.of<PuzzleListState>(context, listen: false).filter =
-                  (Provider.of<PuzzleListState>(context, listen: false)
-                              .filter ??
-                          const PuzzlesListFilter())
-                      .copyWith(difficulty: item.difficulty);
-              context.push('/puzzles-list', extra: item);
+              context.push('/puzzles-list');
             },
           ),
         ),
@@ -116,8 +111,12 @@ class _DesktopMenuBuilderState extends State<_DesktopMenuBuilder> {
                   : SizedBox(
                       width: MediaQuery.of(context).size.width * 0.3,
                       child: PuzzlesListPage(
-                          filter: PuzzlesListFilter(
-                              difficulty: _selectedItem!.difficulty)))),
+                        onClose: () {
+                          setState(() {
+                            _selectedItem = null;
+                          });
+                        },
+                      ))),
         ],
       ),
     );
@@ -168,11 +167,13 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                   final item = _menuItems[index];
                   return Card(
                     child: ListTile(
-                      title: Text(item.title, textAlign: TextAlign.center),
-                      subtitle: Text(
-                          "${item.difficulty.index + 3}x${item.difficulty.index + 3}",
-                          textAlign: TextAlign.center),
                       onTap: () {
+                        Provider.of<PuzzleListState>(context, listen: false)
+                            .filter = (Provider.of<PuzzleListState>(context,
+                                        listen: false)
+                                    .filter ??
+                                const PuzzlesListFilter())
+                            .copyWith(difficulty: item.difficulty);
                         if (_isCrossWord) {
                           widget.onMenuItemTap(item);
                         } else {
@@ -181,6 +182,10 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                                   Puzzle(gridSize: item.difficulty.index + 3));
                         }
                       },
+                      title: Text(item.title, textAlign: TextAlign.center),
+                      subtitle: Text(
+                          "${item.difficulty.index + 3}x${item.difficulty.index + 3}",
+                          textAlign: TextAlign.center),
                     ),
                   );
                 },
@@ -198,7 +203,13 @@ class _MenuItemsWidgetState extends State<_MenuItemsWidget> {
                     title:
                         const Text("Custom Size", textAlign: TextAlign.center),
                     subtitle: const Text("NxN", textAlign: TextAlign.center),
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const _CustomSizeSelectorDialog();
+                          });
+                    },
                   ),
                 ),
               ),
@@ -226,6 +237,70 @@ class _BottomRow extends StatelessWidget {
           const ThemeSelectorButton()
         ],
       ),
+    );
+  }
+}
+
+class _CustomSizeSelectorDialog extends StatefulWidget {
+  const _CustomSizeSelectorDialog({Key? key}) : super(key: key);
+
+  @override
+  __CustomSizeSelectorDialogState createState() =>
+      __CustomSizeSelectorDialogState();
+}
+
+class __CustomSizeSelectorDialogState extends State<_CustomSizeSelectorDialog> {
+  late List<int> _gridSizes;
+  late int _selectedGrid;
+
+  @override
+  void initState() {
+    _gridSizes = List.generate(10, (i) => i + 5);
+    _selectedGrid = _gridSizes.first;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      actionsPadding: const EdgeInsets.only(bottom: 8.0),
+      title: const Text("Select puzzle size"),
+      content: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Selected size : ", style: TextStyle(fontSize: 18)),
+              DropdownButton<int>(
+                value: _selectedGrid,
+                underline: Container(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _selectedGrid = value;
+                  });
+                },
+                items: _gridSizes
+                    .map((i) =>
+                        DropdownMenuItem(value: i, child: Text("${i}x$i")))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: [
+        FloatingActionButton.extended(
+          onPressed: () {
+            context.push('/puzzle', extra: Puzzle(gridSize: _selectedGrid));
+          },
+          icon: const Icon(Icons.check_circle_outline_rounded),
+          label: const Text("Start"),
+        )
+      ],
     );
   }
 }

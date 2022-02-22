@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
@@ -52,7 +53,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-                iconSize: 16,
+                color: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   if (controller.page == 0) {
                     onPromptChanged(prompts.length - 1);
@@ -61,7 +62,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
                     onPromptChanged((controller.page! - 1).toInt());
                   }
                 },
-                icon: const Icon(Icons.arrow_back_ios)),
+                icon: const Icon(FontAwesomeIcons.arrowCircleLeft)),
             Expanded(
               child: PageView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -109,7 +110,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
                   }),
             ),
             IconButton(
-                iconSize: 16,
+                color: Theme.of(context).colorScheme.secondary,
                 onPressed: () {
                   if (controller.page == prompts.length - 1) {
                     onPromptChanged(0);
@@ -118,7 +119,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
                     onPromptChanged((controller.page! + 1).toInt());
                   }
                 },
-                icon: const Icon(Icons.arrow_forward_ios)),
+                icon: const Icon(FontAwesomeIcons.arrowCircleRight)),
           ],
         ),
       ),

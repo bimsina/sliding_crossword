@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
 
 import 'widgets/across_and_down_indexes.dart';
-import 'widgets/hints_and_info_row.dart';
 import 'widgets/prompt_selector.dart';
 import 'widgets/puzzle_widget.dart';
 import 'widgets/timer_and_moves.dart';
@@ -45,8 +46,8 @@ class PuzzlePagePresenter extends StatelessWidget {
               }
             },
             icon: Icon(_puzzleState.state == PuzzlePageState.playing
-                ? Icons.pause_rounded
-                : Icons.play_arrow_rounded),
+                ? FontAwesomeIcons.pauseCircle
+                : FontAwesomeIcons.playCircle),
           ),
           _puzzleState.puzzle is! CrosswordPuzzle
               ? const SizedBox.shrink()
@@ -87,7 +88,6 @@ class PuzzlePagePresenter extends StatelessWidget {
           children: const [
             Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
-            HintsAndInfoRow(),
             PromptSelector(),
           ],
         ),
@@ -95,7 +95,6 @@ class PuzzlePagePresenter extends StatelessWidget {
           children: const [
             Expanded(child: TimerAndMoves()),
             Expanded(flex: 5, child: _MainPuzzle()),
-            HintsAndInfoRow(),
             PromptSelector(),
           ],
         ),
@@ -107,7 +106,6 @@ class PuzzlePagePresenter extends StatelessWidget {
                 child: Column(
                   children: const [
                     Expanded(child: _MainPuzzle()),
-                    HintsAndInfoRow(),
                     PromptSelector(),
                   ],
                 )),
@@ -151,20 +149,17 @@ class _MainPuzzle extends StatelessWidget {
                                     const AcrossIndexes(),
                                     const SizedBox(width: 8),
                                     Expanded(
-                                      child: _puzzleState.tiles.isEmpty
-                                          ? const SizedBox.shrink()
-                                          : _mainPuzzle(
-                                              context, _puzzleState.gridSize),
-                                    ),
+                                        child: _puzzleState.tiles.isEmpty
+                                            ? const SizedBox.shrink()
+                                            : const _MainPuzzleBody()),
                                   ],
                                 ),
                               ),
                             ],
                           )
-                        : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: _mainPuzzle(context, _puzzleState.gridSize),
-                          ),
+                        : const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: _MainPuzzleBody()),
                   ),
                 ),
                 AnimatedScale(
@@ -181,7 +176,7 @@ class _MainPuzzle extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .secondary
-                            .withOpacity(0.4),
+                            .withOpacity(0.2),
                         borderRadius:
                             _puzzleState.state == PuzzlePageState.playing
                                 ? null
@@ -189,14 +184,12 @@ class _MainPuzzle extends StatelessWidget {
                     child: IconButton(
                         autofocus: true,
                         iconSize: 150,
+                        color: Theme.of(context).colorScheme.secondary,
                         onPressed: () {
                           _puzzleState.state = PuzzlePageState.playing;
                         },
                         tooltip: "Resume game",
-                        icon: Icon(
-                          Icons.play_arrow_rounded,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        )),
+                        icon: const Icon(FontAwesomeIcons.playCircle)),
                   ),
                 ),
               ],
@@ -206,11 +199,67 @@ class _MainPuzzle extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _mainPuzzle(BuildContext context, int gridSize) =>
-      LayoutBuilder(builder: (context, conxtraints) {
+class _MainPuzzleBody extends StatefulWidget {
+  const _MainPuzzleBody({Key? key}) : super(key: key);
+
+  @override
+  __MainPuzzleBodyState createState() => __MainPuzzleBodyState();
+}
+
+class __MainPuzzleBodyState extends State<_MainPuzzleBody> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _handleKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      final _puzzleState = context.read<PuzzleState>();
+      final _emptyGridIndex =
+          _puzzleState.tiles.indexOf(_puzzleState.emptyTile);
+      final _gridSize = _puzzleState.gridSize;
+
+      final physicalKey = event.data.physicalKey;
+      int? _tileToMove;
+
+      if (physicalKey == PhysicalKeyboardKey.arrowDown) {
+        _tileToMove = _emptyGridIndex - _gridSize;
+      } else if (physicalKey == PhysicalKeyboardKey.arrowUp) {
+        _tileToMove = _emptyGridIndex + _gridSize;
+      } else if (physicalKey == PhysicalKeyboardKey.arrowRight) {
+        _tileToMove = _emptyGridIndex - 1;
+      } else if (physicalKey == PhysicalKeyboardKey.arrowLeft) {
+        _tileToMove = _emptyGridIndex + 1;
+      }
+
+      if (_tileToMove != null &&
+          _tileToMove >= 0 &&
+          _tileToMove < _gridSize * _gridSize) {
+        _puzzleState.moveTile(_tileToMove);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final _puzzleState = Provider.of<PuzzleState>(context);
+
+    return RawKeyboardListener(
+      onKey: _handleKeyEvent,
+      focusNode: _focusNode,
+      child: LayoutBuilder(builder: (context, conxtraints) {
+        if (!_focusNode.hasFocus) {
+          FocusScope.of(context).requestFocus(_focusNode);
+        }
         return PuzzleWidget(
-          tileSize: conxtraints.maxWidth / gridSize,
+          tileSize: conxtraints.maxWidth / _puzzleState.gridSize,
         );
-      });
+      }),
+    );
+  }
 }

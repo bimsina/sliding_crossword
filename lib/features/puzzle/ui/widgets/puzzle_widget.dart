@@ -94,36 +94,36 @@ class _PuzzleTile extends StatelessWidget {
       width: tileSize,
       child: tile.value == null
           ? const SizedBox.shrink()
-          : Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0)),
-              color: tileColor ?? (!tile.canInteract ? Colors.black : null),
-              child: GestureDetector(
-                onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
-                        swipeDirection == SwipeDirection.right)
-                    ? (details) {
-                        if ((details.velocity.pixelsPerSecond.dx > 1 &&
-                                swipeDirection == SwipeDirection.right) ||
-                            (details.velocity.pixelsPerSecond.dx < 1 &&
-                                swipeDirection == SwipeDirection.left)) {
-                          onTap?.call();
-                        }
+          : GestureDetector(
+              onHorizontalDragEnd: (swipeDirection == SwipeDirection.left ||
+                      swipeDirection == SwipeDirection.right)
+                  ? (details) {
+                      if ((details.velocity.pixelsPerSecond.dx > 1 &&
+                              swipeDirection == SwipeDirection.right) ||
+                          (details.velocity.pixelsPerSecond.dx < 1 &&
+                              swipeDirection == SwipeDirection.left)) {
+                        onTap?.call();
                       }
-                    : null,
-                onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
-                        swipeDirection == SwipeDirection.up)
-                    ? (details) {
-                        if ((details.velocity.pixelsPerSecond.dy > 1 &&
-                                swipeDirection == SwipeDirection.down) ||
-                            (details.velocity.pixelsPerSecond.dy < 1 &&
-                                swipeDirection == SwipeDirection.up)) {
-                          onTap?.call();
-                        }
+                    }
+                  : null,
+              onVerticalDragEnd: (swipeDirection == SwipeDirection.down ||
+                      swipeDirection == SwipeDirection.up)
+                  ? (details) {
+                      if ((details.velocity.pixelsPerSecond.dy > 1 &&
+                              swipeDirection == SwipeDirection.down) ||
+                          (details.velocity.pixelsPerSecond.dy < 1 &&
+                              swipeDirection == SwipeDirection.up)) {
+                        onTap?.call();
                       }
-                    : null,
-                child: InkWell(
-                  onTap: onTap,
-                  borderRadius: BorderRadius.circular(8.0),
+                    }
+                  : null,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(16.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0)),
+                  color: tileColor ?? (!tile.canInteract ? Colors.black : null),
                   child: !tile.canInteract
                       ? const SizedBox.shrink()
                       : Stack(
@@ -131,8 +131,8 @@ class _PuzzleTile extends StatelessWidget {
                           children: [
                             if (_puzzleState.showHints)
                               Positioned(
-                                  left: 4,
-                                  top: 4,
+                                  left: 8,
+                                  top: 8,
                                   child: Text(
                                     "${int.parse(tile.id) + 1}",
                                     style: Theme.of(context)

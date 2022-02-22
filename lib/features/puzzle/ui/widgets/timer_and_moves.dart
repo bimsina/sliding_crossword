@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_crossword/core/utils/date_utils.dart';
 import 'package:sliding_crossword/features/puzzle/models/crossword_puzzle/crossword_puzzle.dart';
@@ -16,7 +17,7 @@ class TimerAndMoves extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.hourglass_bottom, size: 30),
+            const FaIcon(FontAwesomeIcons.hourglassHalf, size: 30),
             const SizedBox(width: 8),
             if (_puzzleState.puzzle is CrosswordPuzzle)
               const _TotalDuration()

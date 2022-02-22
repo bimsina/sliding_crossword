@@ -79,7 +79,6 @@ class CreatePuzzleState extends ChangeNotifier {
               Question(
                 id: "across_$index",
                 prompt: prompt,
-                answer: _acrossAnswers[index],
               ),
             ))
         .values
@@ -92,7 +91,6 @@ class CreatePuzzleState extends ChangeNotifier {
               Question(
                 id: "down_$index",
                 prompt: prompt,
-                answer: _downAnswers[index],
               ),
             ))
         .values
@@ -113,6 +111,7 @@ class CreatePuzzleState extends ChangeNotifier {
       createdAt: DateTime.now(),
       maxMovesAvailable: _maxMoves,
       maxSecondsAvailable: _maxSeconds,
+      tiles: _tileControllers.map((controller) => controller.text).toList(),
     );
 
     DialogUtils.showCustomLoadingDialog(context);

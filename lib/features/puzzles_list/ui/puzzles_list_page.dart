@@ -10,32 +10,25 @@ import 'package:sliding_crossword/features/puzzles_list/state/puzzles_list_state
 import 'package:sliding_crossword/features/puzzles_list/models/puzzles_list_filter.dart';
 export 'package:sliding_crossword/features/puzzles_list/models/puzzles_list_filter.dart';
 
-class PuzzlesListPage extends StatelessWidget {
-  final PuzzlesListFilter filter;
-
-  const PuzzlesListPage({Key? key, required this.filter}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const _PuzzlesListPagePresenter();
-  }
-}
-
-class _PuzzlesListPagePresenter extends StatefulWidget {
-  const _PuzzlesListPagePresenter({Key? key}) : super(key: key);
+class PuzzlesListPage extends StatefulWidget {
+  final VoidCallback? onClose;
+  const PuzzlesListPage({Key? key, this.onClose}) : super(key: key);
 
   @override
-  State<_PuzzlesListPagePresenter> createState() =>
-      _PuzzlesListPagePresenterState();
+  State<PuzzlesListPage> createState() => PuzzlesListPageState();
 }
 
-class _PuzzlesListPagePresenterState extends State<_PuzzlesListPagePresenter> {
+class PuzzlesListPageState extends State<PuzzlesListPage> {
   @override
   Widget build(BuildContext context) {
     final _state = Provider.of<PuzzleListState>(context);
 
     return Scaffold(
       appBar: AppBar(
+        leading: widget.onClose == null
+            ? null
+            : IconButton(
+                onPressed: widget.onClose, icon: const Icon(Icons.close)),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -168,10 +161,6 @@ class __FilterDialogState extends State<_FilterDialog> {
           ),
           const SizedBox(height: 16),
           ToggleButtons(
-            fillColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-            highlightColor:
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-            selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
                 _filter = _filter.copyWith(
@@ -202,10 +191,6 @@ class __FilterDialogState extends State<_FilterDialog> {
           ),
           const SizedBox(height: 16),
           ToggleButtons(
-            fillColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-            highlightColor:
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-            selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
                 _filter = _filter.copyWith(sortOrder: SortOrder.values[index]);
@@ -235,10 +220,6 @@ class __FilterDialogState extends State<_FilterDialog> {
           ),
           const SizedBox(height: 16),
           ToggleButtons(
-            fillColor: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-            highlightColor:
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-            selectedColor: Theme.of(context).colorScheme.secondary,
             onPressed: (index) {
               setState(() {
                 _filter = _filter.copyWith(

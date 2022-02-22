@@ -27,6 +27,8 @@ class CrosswordPuzzle extends Puzzle {
 
   final int? maxMovesAvailable;
 
+  List<String> tiles;
+
   CrosswordPuzzle({
     required this.title,
     required this.across,
@@ -38,7 +40,10 @@ class CrosswordPuzzle extends Puzzle {
     this.timesPlayed = 0,
     this.maxSecondsAvailable,
     this.maxMovesAvailable,
-  }) : super(gridSize: gridSize);
+    required this.tiles,
+  }) : super(gridSize: gridSize) {
+    assert(tiles.length == gridSize * gridSize - 1);
+  }
 
   factory CrosswordPuzzle.fromJson(Map<String, dynamic> json) =>
       _$CrosswordPuzzleFromJson(json);

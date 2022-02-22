@@ -23,10 +23,10 @@ const List<CustomTheme> _availableThemes = [
       tileColor: Color(0xff3a3a3c)),
   CustomTheme(
       id: 'blue_yellow',
-      backgroundColor: Color(0xff2c078c),
-      accentColor: Color(0xfffed420),
+      backgroundColor: Color(0xff4c0d93),
+      accentColor: Color(0xfffdd200),
       brightness: Brightness.dark,
-      tileColor: Color(0xff3914b0)),
+      tileColor: Color(0xff361367)),
   CustomTheme(
       id: 'play_green',
       backgroundColor: Color(0xff1e1e1e),
@@ -160,5 +160,14 @@ class ThemeNotifier extends ChangeNotifier {
             color: _selectedTheme.brightness == Brightness.light
                 ? Colors.black
                 : Colors.white),
+      ),
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
+      toggleButtonsTheme: ToggleButtonsThemeData(
+        borderRadius: BorderRadius.circular(100.0),
+        fillColor: _selectedTheme.accentColor.withOpacity(0.1),
+        highlightColor: _selectedTheme.accentColor.withOpacity(0.5),
+        selectedColor: _selectedTheme.accentColor,
       ));
 }

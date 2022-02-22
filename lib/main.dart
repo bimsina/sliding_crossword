@@ -38,6 +38,16 @@ class MyApp extends StatelessWidget {
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       title: 'Sliding Puzzle',
+      shortcuts: {
+        ...WidgetsApp.defaultShortcuts,
+        const SingleActivator(LogicalKeyboardKey.select):
+            const ActivateIntent(),
+        const SingleActivator(LogicalKeyboardKey.gameButtonB):
+            const PrioritizedIntents(orderedIntents: [DismissIntent()]),
+      },
+      actions: {
+        ...WidgetsApp.defaultActions,
+      },
       theme: _themeState.theme,
       builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
           value: (_themeState.theme.brightness == Brightness.dark

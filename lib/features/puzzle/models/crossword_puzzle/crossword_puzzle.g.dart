@@ -24,6 +24,7 @@ CrosswordPuzzle _$CrosswordPuzzleFromJson(Map<String, dynamic> json) =>
       timesPlayed: json['times_played'] as int? ?? 0,
       maxSecondsAvailable: json['max_seconds_available'] as int?,
       maxMovesAvailable: json['max_moves_available'] as int?,
+      tiles: (json['tiles'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$CrosswordPuzzleToJson(CrosswordPuzzle instance) {
@@ -46,5 +47,6 @@ Map<String, dynamic> _$CrosswordPuzzleToJson(CrosswordPuzzle instance) {
 
   writeNotNull('max_seconds_available', instance.maxSecondsAvailable);
   writeNotNull('max_moves_available', instance.maxMovesAvailable);
+  val['tiles'] = instance.tiles;
   return val;
 }

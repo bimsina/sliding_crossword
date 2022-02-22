@@ -31,12 +31,12 @@ class AppLogo extends StatelessWidget {
           children: [
             Text(
               "Sliding ",
-              style: TextStyle(fontSize: height * 0.3, color: color),
+              style: TextStyle(fontSize: height * 0.2, color: color),
             ),
             Text(
               "Crossword",
               style: TextStyle(
-                  fontSize: height * 0.3, fontWeight: FontWeight.bold),
+                  fontSize: height * 0.2, fontWeight: FontWeight.bold),
             ),
           ],
         )

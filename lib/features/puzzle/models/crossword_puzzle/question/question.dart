@@ -7,12 +7,10 @@ part 'question.g.dart';
 class Question extends Equatable {
   final String id;
   final String prompt;
-  final String answer;
 
   const Question({
     required this.id,
     required this.prompt,
-    required this.answer,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) =>

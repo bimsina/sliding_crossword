@@ -3,7 +3,6 @@ library router;
 import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/features/admin/admin_page.dart';
 import 'package:sliding_crossword/features/create_puzzle/ui/create_puzzle_page.dart';
-import 'package:sliding_crossword/features/menu/models/menu_item.dart';
 import 'package:sliding_crossword/features/menu/ui/menu_page.dart';
 import 'package:sliding_crossword/features/page_not_found/page_not_found.dart';
 import 'package:sliding_crossword/features/profile/ui/profile_page.dart';
@@ -23,15 +22,7 @@ final router = GoRouter(
     GoRoute(
       path: '/puzzles-list',
       builder: (context, state) {
-        if (state.extra is MenuItem) {
-          final item = state.extra as MenuItem;
-          return PuzzlesListPage(
-              filter: PuzzlesListFilter(
-            difficulty: item.difficulty,
-          ));
-        } else {
-          return const MenuPage();
-        }
+        return const PuzzlesListPage();
       },
     ),
     GoRoute(

@@ -40,7 +40,8 @@ class _PuzzlesList extends StatelessWidget {
           return const Text('Something went wrong');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.data == null) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -77,38 +78,67 @@ class _SinglePuzzleState extends State<_SinglePuzzle> {
       onTap: () {
         GoRouter.of(context).push('/puzzle', extra: widget.puzzle);
       },
-      trailing: ElevatedButton.icon(
-        onPressed: _isLoading
-            ? null
-            : () async {
-                setState(() {
-                  _isLoading = true;
-                });
-                final _puzzleDoc = FirebaseFirestore.instance
-                    .collection('puzzles')
-                    .doc(widget.id)
-                    .withConverter<CrosswordPuzzle>(
-                        fromFirestore: (snapshot, options) =>
-                            CrosswordPuzzle.fromJson(snapshot.data()!),
-                        toFirestore: (puzzle, options) => puzzle.toJson());
-                final _currentDoc = FirebaseFirestore.instance
-                    .collection('puzzles_under_review')
-                    .doc(widget.id);
-
-                await Future.wait(
-                        [_puzzleDoc.set(widget.puzzle), _currentDoc.delete()])
-                    .then((value) {
-                  if (mounted) {
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton.icon(
+            label: const Text("Approve"),
+            onPressed: _isLoading
+                ? null
+                : () async {
                     setState(() {
-                      _isLoading = false;
+                      _isLoading = true;
                     });
-                  }
-                });
-              },
-        icon: _isLoading
-            ? const CircularProgressIndicator()
-            : const Icon(Icons.done),
-        label: const Text("Approve"),
+                    final _puzzleDoc = FirebaseFirestore.instance
+                        .collection('puzzles')
+                        .doc(widget.id)
+                        .withConverter<CrosswordPuzzle>(
+                            fromFirestore: (snapshot, options) =>
+                                CrosswordPuzzle.fromJson(snapshot.data()!),
+                            toFirestore: (puzzle, options) => puzzle.toJson());
+                    final _currentDoc = FirebaseFirestore.instance
+                        .collection('puzzles_under_review')
+                        .doc(widget.id);
+
+                    await Future.wait([
+                      _puzzleDoc.set(widget.puzzle),
+                      _currentDoc.delete()
+                    ]).then((value) {
+                      if (mounted) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    });
+                  },
+            icon: _isLoading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.done),
+          ),
+          IconButton(
+            onPressed: _isLoading
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    final _currentDoc = FirebaseFirestore.instance
+                        .collection('puzzles_under_review')
+                        .doc(widget.id);
+                    _currentDoc.delete().then((value) {
+                      if (mounted) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    });
+                  },
+            icon: _isLoading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.delete),
+          ),
+        ],
       ),
     );
   }

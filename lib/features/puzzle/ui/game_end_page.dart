@@ -1,5 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sliding_crossword/core/utils/date_utils.dart';
 import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
@@ -102,7 +103,7 @@ class _TimeTaken extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          Icons.hourglass_bottom_rounded,
+          FontAwesomeIcons.hourglassHalf,
           size: 30,
           color: Theme.of(context).scaffoldBackgroundColor,
         ),
