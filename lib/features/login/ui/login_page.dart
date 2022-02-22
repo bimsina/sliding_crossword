@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     _userState.signInAnonymously(context);
                   },
-                  title: "Sign in with Anonymously",
+                  title: "Sign in Anonymously",
                   isLoading: _userState.status == AuthStatus.loggingIn),
             ],
           ),

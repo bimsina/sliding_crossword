@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       routerDelegate: router.routerDelegate,
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
-      title: 'Sliding Puzzle',
+      title: 'Sliding Crossword',
       shortcuts: {
         ...WidgetsApp.defaultShortcuts,
         const SingleActivator(LogicalKeyboardKey.select):

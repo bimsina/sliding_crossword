@@ -7,19 +7,15 @@ class ThemeSelectorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.centerRight,
-      children: [
-        IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (context) => const _ThemeSelectorDialog());
-            },
-            icon: const Icon(Icons.palette_rounded)),
-      ],
-    );
+    return IconButton(
+        tooltip: 'Change Theme',
+        onPressed: () {
+          showModalBottomSheet(
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (context) => const _ThemeSelectorDialog());
+        },
+        icon: const Icon(Icons.palette_rounded));
   }
 }
 

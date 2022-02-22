@@ -17,9 +17,12 @@ class CreatePuzzlePage extends StatelessWidget {
         if (!snapshot.hasData) {
           return const LoginPage();
         }
-        return ChangeNotifierProvider(
-            create: (context) => CreatePuzzleState(snapshot.data!),
-            child: const _CreatePuzzlePagePresenter());
+        return Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: ChangeNotifierProvider(
+              create: (context) => CreatePuzzleState(snapshot.data!),
+              child: const _CreatePuzzlePagePresenter()),
+        );
       },
     );
   }
@@ -192,13 +195,16 @@ class _PuzzleTextFields extends StatelessWidget {
                   controller: _state.tileControllers[index],
                   decoration: const InputDecoration(
                     hintText: "Answer",
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
                   ),
                   textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.center,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(1),
-                    FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
-                  ],
+                  // inputFormatters: [
+                  //   LengthLimitingTextInputFormatter(1),
+                  //   FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+                  // ],
                   // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value == null || value.isEmpty) {

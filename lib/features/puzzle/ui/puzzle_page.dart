@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_crossword/core/theme/ui/theme_selector.dart';
 import 'package:sliding_crossword/core/ui/responsive_builder.dart';
 import 'package:sliding_crossword/features/puzzle/models/puzzle/puzzle.dart';
 import 'package:sliding_crossword/features/puzzle/state/puzzle_state.dart';
@@ -36,6 +37,7 @@ class PuzzlePagePresenter extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          const ThemeSelectorButton(),
           IconButton(
             tooltip: 'Pause Game',
             onPressed: () {
@@ -219,12 +221,22 @@ class __MainPuzzleBodyState extends State<_MainPuzzleBody> {
 
   void _handleKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
+      final physicalKey = event.data.physicalKey;
+
       final _puzzleState = context.read<PuzzleState>();
+      if (physicalKey == PhysicalKeyboardKey.escape) {
+        if (_puzzleState.state == PuzzlePageState.playing) {
+          _puzzleState.state = PuzzlePageState.paused;
+        } else {
+          _puzzleState.state = PuzzlePageState.playing;
+        }
+
+        return;
+      }
       final _emptyGridIndex =
           _puzzleState.tiles.indexOf(_puzzleState.emptyTile);
       final _gridSize = _puzzleState.gridSize;
 
-      final physicalKey = event.data.physicalKey;
       int? _tileToMove;
 
       if (physicalKey == PhysicalKeyboardKey.arrowDown) {

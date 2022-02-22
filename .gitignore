@@ -31,6 +31,10 @@
 .pub/
 /build/
 
+.firebaserc
+firebase.json
+.firebase/
+
 # Web related
 lib/generated_plugin_registrant.dart
 
