@@ -17,12 +17,9 @@ class CreatePuzzlePage extends StatelessWidget {
         if (!snapshot.hasData) {
           return const LoginPage();
         }
-        return Container(
-          constraints: const BoxConstraints(maxWidth: 500),
-          child: ChangeNotifierProvider(
-              create: (context) => CreatePuzzleState(snapshot.data!),
-              child: const _CreatePuzzlePagePresenter()),
-        );
+        return ChangeNotifierProvider(
+            create: (context) => CreatePuzzleState(snapshot.data!),
+            child: const _CreatePuzzlePagePresenter());
       },
     );
   }
@@ -41,9 +38,9 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
       body: SafeArea(
         child: Form(
           key: _state.formKey,
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Center(
+              child: Container(
+            constraints: const BoxConstraints(maxWidth: 500),
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -89,7 +86,7 @@ class _CreatePuzzlePagePresenter extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          )),
         ),
       ),
     );
@@ -174,9 +171,8 @@ class _PuzzleTextFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _state = Provider.of<CreatePuzzleState>(context);
-    return Container(
-      margin: const EdgeInsets.all(8.0),
-      constraints: const BoxConstraints(maxWidth: 600),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: AspectRatio(
         aspectRatio: 1,
         child: GridView.builder(

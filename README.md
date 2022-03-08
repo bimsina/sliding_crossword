@@ -1,16 +1,46 @@
-# sliding_crossword
+# Sliding Crossword
 
-A new Flutter project.
+### A combination of sliding and crossword puzzle
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Flutter Puzzle Hack Submission
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+![thumb](https://user-images.githubusercontent.com/29589003/157159773-7205ea35-5754-4a03-ab95-0d5b43d2a8a1.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+See the demo [here](https://slidingcrossword.web.app/).
+
+See the submission [here](https://devpost.com/software/sliding-crossword).
+
+### To build the app :
+
+1.  Install FlutterFire CLI from [here](https://firebase.flutter.dev/docs/cli/#installation)
+
+2.  Configure Firebase project
+
+    - Clone the project
+
+      ```
+      git clone https://github.com/bimsina/sliding_crossword
+      ```
+
+    - Navigate to project
+
+      ```
+      cd sliding_crossword/
+      ```
+
+    - Configure Firebase
+
+      ```
+      flutterfire configure
+      ```
+
+      A file named **_firebase_options.dart_** should be generated.
+
+3.  Build the app
+    ```
+    flutter run
+    ```

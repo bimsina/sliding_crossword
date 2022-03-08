@@ -45,7 +45,7 @@ class _PromptSelectorPresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     final _puzzleState = Provider.of<PuzzleState>(context);
     return Container(
-      height: 100,
+      height: 120,
       constraints: const BoxConstraints(maxWidth: 500),
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -95,9 +95,13 @@ class _PromptSelectorPresenter extends StatelessWidget {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          prompts[index].prompt,
-                          style: const TextStyle(fontSize: 18),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            prompts[index].prompt,
+                            style: const TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         if (_subtitle != "")
